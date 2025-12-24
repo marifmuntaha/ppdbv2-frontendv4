@@ -6,6 +6,9 @@ import User from "./user";
 // import Notification from "./dropdown/notification/Notification";
 
 import { useTheme, useThemeUpdate } from '@/common/hooks/useTheme';
+import {useAuthContext} from "@/common/hooks/useAuthContext";
+import {Button} from "@/components";
+import {Link} from "react-router-dom";
 
 // Define types for the Header component props
 interface HeaderProps {
@@ -14,6 +17,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ fixed, className }) => {
+    const {isLogged} = useAuthContext();
     const theme = useTheme();  // Theme from context
     const themeUpdate = useThemeUpdate();  // Theme update function from context
 
@@ -52,7 +56,13 @@ const Header: React.FC<HeaderProps> = ({ fixed, className }) => {
                             {/*    <Notification />*/}
                             {/*</li>*/}
                             <li className="user-dropdown">
-                                <User />
+                                {isLogged ? (
+                                    <User />
+                                ) : (
+                                    <Link to="/auth/masuk">
+                                        <Button color="primary">MASUK</Button>
+                                    </Link>
+                                )}
                             </li>
                         </ul>
                     </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Logo from "@/images/logo2x.png";
-import LogoDark from "@/images/logo-dark2x.png";
+import Logo from "@/images/logo.png";
+import LogoDark from "@/images/logo-dark.png";
 import Head from "@/layout/head";
 import AuthFooter from "@/layout/footer/auth";
 import {
@@ -26,9 +26,10 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormType>();
     const navigate = useNavigate();
-    const onSubmit = async (value: RegisterFormType) => {
+    const onSubmit = async (formData: RegisterFormType) => {
         setLoading(true);
-        await registerUser(value).then((resp) => {
+        formData.role = 4
+        await registerUser(formData).then((resp) => {
             if(resp !== undefined) navigate('/auth/verifikasi')
         }).finally(() => setLoading(false));
     };

@@ -14,15 +14,22 @@ import {Badge, ButtonGroup, Spinner} from "reactstrap";
 import {get as getActivity, destroy as destroyActivity} from "@/common/api/institution/activity";
 import {useParams} from "react-router-dom";
 import {useYearContext} from "@/common/hooks/useYearContext";
+import Partial from "./partial";
 
 const Activity: React.FC = () => {
     const year = useYearContext()
     const {id} = useParams();
-    const [loading, setLoading] = useState<boolean|number|string|undefined>(false)
+    const [loading, setLoading] = useState<boolean | number | string | undefined>(false)
     const [loadData, setLoadData] = useState<boolean>(false)
     const [modal, setModal] = useState<boolean>(false);
     const [activities, setActivities] = useState<InstitutionActivityType[]>([])
-    const [activity, setActivity] = useState<InstitutionActivityType>()
+    const [activity, setActivity] = useState<InstitutionActivityType>({
+        id: undefined,
+        yearId: year?.id,
+        institutionId: id,
+        capacity: '',
+        brochure: ''
+    })
     const Column: ColumnType<InstitutionActivityType>[] = [
         {
             name: "Tahun Pelajaran",
@@ -86,7 +93,8 @@ const Activity: React.FC = () => {
                             Textual form controls—like <code className="code-tag">&lt;input&gt;</code>s,{" "}
                             <code className="code-tag">&lt;select&gt;</code>s, and{" "}
                         </p>
-                    </BlockHeadContent>                    <BlockHeadContent>
+                    </BlockHeadContent>
+                    <BlockHeadContent>
                         <div className="toggle-wrap nk-block-tools-toggle">
                             <div className="toggle-expand-content" style={{display: "none"}}>
                                 <ul className="nk-block-tools g-3">
@@ -106,6 +114,7 @@ const Activity: React.FC = () => {
             <PreviewCard>
                 <ReactDataTable data={activities} columns={Column} pagination progressPending={loadData}/>
             </PreviewCard>
+            <Partial modal={modal} setModal={setModal} activity={activity} setActivity={setActivity} setLoadData={setLoadData}/>
         </React.Fragment>
     )
 }

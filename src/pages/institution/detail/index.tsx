@@ -56,10 +56,10 @@ const InstitutionDetails: React.FC = () => {
                             </BlockHeadContent>
 
                             <BlockHeadContent>
-                                <Link to="/kyc-list-regular">
+                                <Link to={'/lembaga/data-lembaga'}>
                                     <Button color="light" outline className="bg-white d-none d-sm-inline-flex">
                                         <Icon name="arrow-left"/>
-                                        <span>Back</span>
+                                        <span>Kembali</span>
                                     </Button>
                                     <Button color="light" outline className="btn-icon bg-white d-inline-flex d-sm-none">
                                         <Icon name="arrow-left"/>

@@ -1,5 +1,5 @@
-import React, { useEffect, type ReactNode } from "react";
-import { Routes, Route, useLocation, BrowserRouter } from "react-router-dom";
+import React, {useEffect, type ReactNode} from "react";
+import {Routes, Route, useLocation, BrowserRouter} from "react-router-dom";
 import ThemeProvider from "@/layout/provider/theme";
 import {NoSidebar, WithSidebar} from '@/layout';
 import Dashboard from '@/pages/dashboard';
@@ -11,12 +11,14 @@ import ForgetPassword from "@/pages/auth/forget-password";
 import Year from "@/pages/master/year";
 import InstitutionList from "@/pages/institution/list";
 import InstitutionDetails from "@/pages/institution/detail";
+import Logout from "@/pages/auth/logout";
+import Error404 from "@/pages/error/error404";
 
 interface ScrollToTopProps {
     children: ReactNode;
 }
 
-const ScrollToTop: React.FC<ScrollToTopProps> = ({ children }) => {
+const ScrollToTop: React.FC<ScrollToTopProps> = ({children}) => {
     const location = useLocation();
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -31,23 +33,28 @@ const Router: React.FC = () => {
             <ScrollToTop>
                 <Routes>
                     <Route element={<ThemeProvider/>}>
-                        <Route element={<WithSidebar />}>
-                            <Route element={<ProtectedRoute />}>
-                                <Route path='/dashboard' element={<Dashboard />} />
-                                <Route path='/master-data/tahun-pelajaran' element={<Year />} />
+                        <Route element={<WithSidebar/>}>
+                            <Route element={<ProtectedRoute/>}>
+                                <Route path='/dashboard' element={<Dashboard/>}/>
+                                <Route path='/master-data/tahun-pelajaran' element={<Year/>}/>
                                 <Route path='/lembaga/:id/detail' element={<InstitutionDetails/>}/>
-                                <Route path='/lembaga/data-lembaga' element={<InstitutionList />} />
+                                <Route path='/lembaga/data-lembaga' element={<InstitutionList/>}/>
                             </Route>
+                            <Route path='/' element={<Dashboard/>}/>
                         </Route>
                         <Route element={<NoSidebar/>}>
-                            <Route path="/auth/masuk" element={<Login />} />
-                            <Route path="/auth/buat-akun" element={<Register />} />
-                            <Route path="/auth/lupa-sandi" element={<ForgetPassword />} />
+                            <Route path="/auth/masuk" element={<Login/>}/>
+                            <Route path="/auth/buat-akun" element={<Register/>}/>
+                            <Route path="/auth/lupa-sandi" element={<ForgetPassword/>}/>
+                            <Route element={<ProtectedRoute/>}>
+                                <Route path="/auth/keluar" element={<Logout/>}/>
+                            </Route>
+                            <Route path="*" element={<Error404/>}/>
                         </Route>
                     </Route>
                 </Routes>
             </ScrollToTop>
-            <ToastContainer />
+            <ToastContainer/>
         </BrowserRouter>
     );
 };

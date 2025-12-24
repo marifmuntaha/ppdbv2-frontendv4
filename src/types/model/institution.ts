@@ -36,9 +36,9 @@ export type InstitutionFormType = {
 export type InstitutionActivityType = {
     id?: number|undefined;
     yearId: number|undefined;
-    institutionId: string|undefined;
+    institutionId: number|string|undefined;
     capacity: string,
-    brochure: any,
+    brochure?: any,
     createdBy?: number|undefined,
     updatedBy?: number|undefined,
     year?: YearType|undefined,
@@ -48,7 +48,7 @@ export type InstitutionActivityType = {
 export type InstitutionActivityFormType = {
     id?: number|undefined;
     yearId: number|undefined;
-    institutionId: number|undefined;
+    institutionId: number|string|undefined;
     capacity: string,
     brochure: string
 }

@@ -114,19 +114,19 @@ class apiCore {
 
     setLoggedInUser = (session: AuthenticationType | undefined) => {
         if (session) {
-            localStorage.setItem('_PMB_TOKEN_SERVICE_', session.token);
+            localStorage.setItem('__PMB_TOKEN_SERVICE__', session.token);
         } else {
-            localStorage.removeItem('_PMB_TOKEN_SERVICE_');
+            localStorage.removeItem('__PMB_TOKEN_SERVICE__');
         }
     };
 
     getLoggedInUser = (): AuthenticationType | undefined => {
-        const token = localStorage.getItem('_PMB_TOKEN_SERVICE_');
+        const token = localStorage.getItem('__PMB_TOKEN_SERVICE__');
         return token ? {token: token}: undefined;
     };
 
     setUserInSession = (modifiedUser: AuthenticationType) => {
-        const userInfo = localStorage.getItem('_PMB_TOKEN_SERVICE_');
+        const userInfo = localStorage.getItem('__PMB_TOKEN_SERVICE__');
         if (userInfo) {
             this.setLoggedInUser(modifiedUser);
         }

@@ -12,7 +12,7 @@ async function get(params: Record<string, any> = {}, notification: boolean = fal
 
 async function store(params: Record<string, any> = {}) {
     const baseUrl = '/master/year'
-    const result =  await api.createWithFile<YearType>(baseUrl, params, true)
+    const result =  await api.create<YearType>(baseUrl, params, true)
         .then((resp) => resp.result)
     return result !== undefined ? result : [];
 }

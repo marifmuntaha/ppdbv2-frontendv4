@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {Button, Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
-import {Controller, useForm} from "react-hook-form";
-import {Icon, RSelect} from "@/components";
+import {useEffect, useState} from "react";
+import {Button, Input, Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
+import {useForm} from "react-hook-form";
+import {Icon} from "@/components";
 import {store as storeActivity, update as updateActivity} from "@/common/api/institution/activity";
 import type {InstitutionActivityFormType, InstitutionActivityType} from "@/types";
 import {useYearContext} from "@/common/hooks/useYearContext";
@@ -10,18 +10,17 @@ import {useParams} from "react-router-dom";
 interface PartialProps {
     modal: boolean;
     setModal: (modal: boolean) => void;
-    activity: InstitutionActivityFormType
+    activity: InstitutionActivityType
     setActivity: (activity: InstitutionActivityType) => void;
     setLoadData: (loadData: boolean) => void;
 }
 
 const Partial = ({modal, setModal, activity, setActivity, setLoadData}: PartialProps) => {
     const [loading, setLoading] = useState(false);
-    const [file, setFile] = useState()
+    const [file, setFile] = useState<any>()
     const year = useYearContext()
     const {id} = useParams();
     const {
-        control,
         reset,
         handleSubmit,
         register,
@@ -35,21 +34,25 @@ const Partial = ({modal, setModal, activity, setActivity, setLoadData}: PartialP
             yearId: year?.id,
             institutionId: id,
             capacity: value.capacity,
-            brochure: file
+            file: file
         }
         if (activity.id === undefined) onStore(formData)
         else onUpdate(formData);
     }
-    const onStore = async (value: InstitutionActivityType) => {
+    const onStore = async (formData: InstitutionActivityType) => {
         setLoading(true);
-        await storeActivity(value).then(() => {
-            toggle()
-            setLoadData(true)
+        await storeActivity(formData).then((resp) => {
+            if (resp) {
+                toggle()
+                setLoadData(true)
+            } else {
+                return
+            }
         }).finally(() => setLoading(false));
     }
-    const onUpdate = async (value: InstitutionActivityType) => {
+    const onUpdate = async (formData: InstitutionActivityType) => {
         setLoading(true)
-        await updateActivity(value).then(() => {
+        await updateActivity(formData).then(() => {
             toggle()
             setLoadData(true)
         }).finally(() => setLoading(false));
@@ -69,10 +72,11 @@ const Partial = ({modal, setModal, activity, setActivity, setLoadData}: PartialP
         handleReset();
     };
     useEffect(() => {
-        setValue('id', year.id);
-        setValue('name', year.name);
-        setValue('description', year.description);
-        setValue('active', activeOptions.find((item) => item.value === year.active));
+        setValue('id', activity.id);
+        setValue('yearId', activity.yearId);
+        setValue('institutionId', activity.institutionId);
+        setValue('capacity', activity.capacity);
+        setValue('brochure', activity.brochure);
     }, [year, setValue]);
 
     return (
@@ -82,54 +86,31 @@ const Partial = ({modal, setModal, activity, setActivity, setLoadData}: PartialP
                     <Icon name="cross"/>
                 </button>
             }>
-                {year.id === undefined ? 'TAMBAH' : 'UBAH'}
+                {activity.id === undefined ? 'TAMBAH' : 'UBAH'}
             </ModalHeader>
             <ModalBody>
                 <form className="is-alter" onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-group">
-                        <label className="form-label" htmlFor="name">Nama Tahun</label>
+                        <label className="form-label" htmlFor="capacity">Kapasitas</label>
                         <div className="form-control-wrap">
                             <input
                                 type="text"
                                 className="form-control"
-                                id="name"
-                                placeholder="Ex. 2024/2025"
-                                {...register("name", {required: true})}
+                                id="capacity"
+                                placeholder="Ex. 180"
+                                {...register("capacity", {required: true})}
                             />
-                            {errors.name && <span className="invalid">Kolom tidak boleh kosong</span>}
+                            {errors.capacity && <span className="invalid">Kolom tidak boleh kosong</span>}
                         </div>
                     </div>
                     <div className="form-group">
-                        <label className="form-label" htmlFor="description">Diskripsi</label>
+                        <label className="form-label" htmlFor="logo">File Brosur</label>
                         <div className="form-control-wrap">
-                            <textarea
-                                className="form-control"
-                                id="description"
-                                placeholder="Ex. Tahun Pelajaran 2024/2025"
-                                {...register("description", {required: false})}
+                            <Input
+                                type="file"
+                                id="logo"
+                                onChange={(e) => setFile(e.target.files?.[0])}
                             />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="active">Pilih Aktif</label>
-                        <div className="form-control-wrap">
-                            <Controller
-                                control={control}
-                                name="active"
-                                rules={{required: "Status tahun tidak boleh kosong"}}
-                                render={({field}) => (
-                                    <React.Fragment>
-                                        <RSelect
-                                            options={activeOptions}
-                                            value={field.value}
-                                            onChange={(selectedOption) => field.onChange(selectedOption)}
-                                            placeholder="Pilih Aktif"
-                                        />
-                                        <input type="hidden" id="active" className="form-control"/>
-                                        {errors.active && <span className="invalid">Kolom tidak boleh kosong.</span>}
-                                    </React.Fragment>
-                                )
-                                }/>
                         </div>
                     </div>
                     <div className="form-group">
