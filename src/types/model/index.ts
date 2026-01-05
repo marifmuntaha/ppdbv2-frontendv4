@@ -1,3 +1,5 @@
+export * from "./boarding"
 export * from "./institution"
+export * from "./student"
 export * from "./user"
 export * from "./year"

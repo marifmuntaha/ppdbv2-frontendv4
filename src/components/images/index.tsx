@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Modal } from "reactstrap";
+import {Icon} from "@/components";
 
 interface ImageContainerProps {
     img?: string;
+    isIcon?: boolean;
 }
 
-const ImageContainer: React.FC<ImageContainerProps> = ({ img }) => {
+const ImageContainer: React.FC<ImageContainerProps> = ({ img, isIcon }) => {
     const [open, setOpen] = useState<boolean>(false);
 
     const toggle = (): void => {
@@ -21,7 +23,11 @@ const ImageContainer: React.FC<ImageContainerProps> = ({ img }) => {
                 toggle();
             }}
         >
-            <img className="w-100 p-3 rounded-top" src={img} alt="" />
+            {isIcon ? (
+                <Icon name="file-img" className="fs-22px"/>
+            ) : (
+                <img className="w-100 p-3 rounded-top" src={img} alt="" />
+            )}
 
             <Modal isOpen={open} toggle={toggle} size="lg" contentClassName="rounded-5">
                 <button type="button" className="mfp-close" onClick={toggle}>

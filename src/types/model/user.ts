@@ -3,5 +3,8 @@ export type UserType = {
     name: string,
     email: string,
     role: string
-    phone_verified_at?: Date|null
+    phone: string,
+    phone_verified_at?: string
+    created_at?: string,
+    updated_at?: string,
 }

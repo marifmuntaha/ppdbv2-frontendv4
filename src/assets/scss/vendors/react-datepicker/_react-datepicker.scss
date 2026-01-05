@@ -224,7 +224,7 @@ $input-daterange-add-on-bg: $bg-light;
 .react-datepicker__current-month,
 .react-datepicker-time__header,
 .react-datepicker-year-header {
-  margin-top: 0;
+  margin-top: 6px;
   font-size: .8125rem;
 }
 
@@ -835,5 +835,9 @@ $input-daterange-add-on-bg: $bg-light;
 }
 
 .react-datepicker__aria-live {
+  display: none;
+}
+
+.react-datepicker__sr-only {
   display: none;
 }

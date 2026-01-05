@@ -3,10 +3,10 @@ import type {ApiResponseInterface, InstitutionType} from "@/types";
 
 const api = new apiCore()
 
-async function get(params: Record<string, any> = {}, notification: boolean = false): Promise<InstitutionType[]> {
+async function get<T>(params: Record<string, any> = {}, notification: boolean = false): Promise<T[]> {
     const baseUrl = '/institution'
-    const result = await api.get<InstitutionType[]>(baseUrl, params, notification)
-        .then((value: ApiResponseInterface<InstitutionType[]> ) => value.result);
+    const result = await api.get<T[]>(baseUrl, params, notification)
+        .then((value: ApiResponseInterface<T[]> ) => value.result);
     return result !== undefined ? result : [];
 }
 

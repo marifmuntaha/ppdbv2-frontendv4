@@ -14,13 +14,13 @@ async function store(params: Record<string, any> = {}) {
     const baseUrl = '/institution/activity'
     const result = await api.createWithFile<InstitutionActivityType>(baseUrl, params, true)
         .then((resp) => resp.result)
-    return result !== undefined ? result : false;
+    return result !== undefined ? result : undefined;
 }
 
 async function update(params: Record<string, any> = {}) {
     const baseUrl = `/institution/activity/${params.id}`
     return await api.updateWithFile<InstitutionActivityType>(baseUrl, params, true)
-        .then((resp) => resp);
+        .then((resp) => resp.result);
 }
 
 async function destroy(id: number | undefined) {

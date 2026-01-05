@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import Logo from "@/images/logo.png";
 import LogoDark from "@/images/logo-dark.png";
 import Head from "@/layout/head";
@@ -14,9 +14,9 @@ import {
     Icon,
     PreviewCard,
 } from "@/components";
-import { Spinner } from "reactstrap";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import {Spinner} from "reactstrap";
+import {useForm} from "react-hook-form";
+import {Link} from "react-router-dom";
 import type {RegisterFormType} from "@/types";
 import {register as registerUser} from "@/common/api/auth"
 
@@ -24,23 +24,23 @@ const Register = () => {
     const [passState, setPassState] = useState(false);
     const [confmState, setConfmState] = useState(false);
     const [loading, setLoading] = useState(false);
-    const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormType>();
+    const {register, handleSubmit, watch, formState: {errors}} = useForm<RegisterFormType>();
     const navigate = useNavigate();
     const onSubmit = async (formData: RegisterFormType) => {
         setLoading(true);
         formData.role = 4
         await registerUser(formData).then((resp) => {
-            if(resp !== undefined) navigate('/auth/verifikasi')
+            if (resp !== undefined) navigate('/auth/verifikasi')
         }).finally(() => setLoading(false));
     };
     return (
         <React.Fragment>
-            <Head title="Register" />
+            <Head title="Register"/>
             <Block className="nk-block-middle nk-auth-body  wide-xs">
                 <div className="brand-logo pb-4 text-center">
                     <Link to={`/`} className="logo-link">
-                        <img className="logo-light logo-img logo-img-lg" src={Logo} alt="logo" />
-                        <img className="logo-dark logo-img logo-img-lg" src={LogoDark} alt="logo-dark" />
+                        <img className="logo-light logo-img logo-img-lg" src={Logo} alt="logo"/>
+                        <img className="logo-dark logo-img logo-img-lg" src={LogoDark} alt="logo-dark"/>
                     </Link>
                 </div>
                 <PreviewCard className="card-bordered" bodyClass="card-inner-lg">
@@ -59,9 +59,9 @@ const Register = () => {
                                 <input
                                     type="text"
                                     id="name"
-                                    {...register('name', { required: 'Kolom ini wajib diisi' })}
+                                    {...register('name', {required: 'Kolom ini wajib diisi'})}
                                     placeholder="Masukkan nama Anda"
-                                    className="form-control-lg form-control" />
+                                    className="form-control-lg form-control"/>
                                 {errors.name && <p className="invalid">{errors.name.message}</p>}
                             </div>
                         </div>
@@ -71,9 +71,9 @@ const Register = () => {
                                 <input
                                     type="text"
                                     id="phone"
-                                    {...register('phone', { required: 'Kolom ini wajib diisi' })}
+                                    {...register('phone', {required: 'Kolom ini wajib diisi'})}
                                     placeholder="Masukkan nomor Whatsapp"
-                                    className="form-control-lg form-control" />
+                                    className="form-control-lg form-control"/>
                                 {errors.phone && <p className="invalid">{errors.phone.message}</p>}
                             </div>
                         </div>
@@ -85,9 +85,15 @@ const Register = () => {
                                 <input
                                     type="text"
                                     id="email"
-                                    {...register('email', { required: 'Kolom ini wajib diisi' })}
+                                    {...register('email', {
+                                        required: 'Kolom ini wajib diisi',
+                                        pattern: {
+                                            value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+                                            message: 'Alamat email tidak valid'
+                                        }
+                                    })}
                                     className="form-control-lg form-control"
-                                    placeholder="Masukkan alamat email Anda" />
+                                    placeholder="Masukkan alamat email Anda"/>
                                 {errors.email && <p className="invalid">{errors.email.message}</p>}
                             </div>
                         </div>
@@ -111,9 +117,19 @@ const Register = () => {
                                 <input
                                     type={passState ? "text" : "password"}
                                     id="password"
-                                    {...register('password', { required: "Kolom ini wajib diisi" })}
+                                    {...register('password', {
+                                        required: "Kolom ini wajib diisi",
+                                        minLength: {
+                                            value: 8,
+                                            message: 'Kata sandi harus terdiri dari minimal 8 karakter'
+                                        },
+                                        pattern: {
+                                            value: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                            message: 'Kata sandi harus berisi minimal 1 huruf besar, 1 angka, dan 1 karakter khusus'
+                                        }
+                                    })}
                                     placeholder="Masukkan kata sandi Anda"
-                                    className={`form-control-lg form-control ${passState ? "is-hidden" : "is-shown"}`} />
+                                    className={`form-control-lg form-control ${passState ? "is-hidden" : "is-shown"}`}/>
                                 {errors.password && <span className="invalid">{errors.password.message}</span>}
                             </div>
                         </div>
@@ -137,15 +153,19 @@ const Register = () => {
                                 <input
                                     type={confmState ? "text" : "password"}
                                     id="password_confirmation"
-                                    {...register('password_confirmation', { required: "Kolom ini wajib diisi" })}
+                                    {...register('password_confirmation', {
+                                        required: "Kolom ini wajib diisi",
+                                        validate: value => value === watch('password')|| 'Kata sandi tidak cocok'
+                                    })}
                                     placeholder="Masukkan kata sandi Anda"
-                                    className={`form-control-lg form-control ${passState ? "is-hidden" : "is-shown"}`} />
-                                {errors.password_confirmation && <span className="invalid">{errors.password_confirmation.message}</span>}
+                                    className={`form-control-lg form-control ${passState ? "is-hidden" : "is-shown"}`}/>
+                                {errors.password_confirmation &&
+                                    <span className="invalid">{errors.password_confirmation.message}</span>}
                             </div>
                         </div>
                         <div className="form-group">
                             <Button type="submit" color="primary" size="lg" className="btn-block">
-                                {loading ? <Spinner size="sm" color="light" /> : "Buat Akun"}
+                                {loading ? <Spinner size="sm" color="light"/> : "Buat Akun"}
                             </Button>
                         </div>
                     </form>
@@ -158,7 +178,7 @@ const Register = () => {
                     </div>
                 </PreviewCard>
             </Block>
-            <AuthFooter />
+            <AuthFooter/>
         </React.Fragment>
     )
 };

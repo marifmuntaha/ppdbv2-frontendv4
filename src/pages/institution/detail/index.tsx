@@ -19,6 +19,8 @@ import type {InstitutionType} from "@/types";
 import {show as showInstitution} from "@/common/api/institution"
 import ImageContainer from "@/components/images";
 import Activity from "./activity";
+import Program from "@/pages/institution/detail/program";
+import Period from "@/pages/institution/detail/period";
 
 const InstitutionDetails: React.FC = () => {
     const [institution, setInstitution] = useState<InstitutionType>();
@@ -162,6 +164,20 @@ const InstitutionDetails: React.FC = () => {
                         <Row className="gy-5">
                             <Col md={8}>
                                 <Activity />
+                            </Col>
+                        </Row>
+                    </Block>
+                    <Block size="lg">
+                        <Row className="gy-5">
+                            <Col md={8}>
+                                <Program />
+                            </Col>
+                        </Row>
+                    </Block>
+                    <Block size="lg">
+                        <Row className="gy-5">
+                            <Col md={8}>
+                                <Period />
                             </Col>
                         </Row>
                     </Block>

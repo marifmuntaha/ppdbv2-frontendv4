@@ -34,6 +34,7 @@ const Login = () => {
             if (resp !== undefined) {
                 if (resp.user?.phone_verified_at === null) {
                     navigate("/auth/verifikasi");
+                    setUser(resp.user)
                 } else {
                     setUser(resp.user)
                     setIsLogged(true);

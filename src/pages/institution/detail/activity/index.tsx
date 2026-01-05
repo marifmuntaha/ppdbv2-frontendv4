@@ -10,9 +10,9 @@ import {
 } from "@/components";
 import React, {useEffect, useState} from "react";
 import type {ColumnType, InstitutionActivityType} from "@/types";
-import {Badge, ButtonGroup, Spinner} from "reactstrap";
+import {ButtonGroup, Spinner} from "reactstrap";
 import {get as getActivity, destroy as destroyActivity} from "@/common/api/institution/activity";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {useYearContext} from "@/common/hooks/useYearContext";
 import Partial from "./partial";
 
@@ -20,7 +20,7 @@ const Activity: React.FC = () => {
     const year = useYearContext()
     const {id} = useParams();
     const [loading, setLoading] = useState<boolean | number | string | undefined>(false)
-    const [loadData, setLoadData] = useState<boolean>(false)
+    const [loadData, setLoadData] = useState<boolean>(true)
     const [modal, setModal] = useState<boolean>(false);
     const [activities, setActivities] = useState<InstitutionActivityType[]>([])
     const [activity, setActivity] = useState<InstitutionActivityType>({
@@ -38,7 +38,7 @@ const Activity: React.FC = () => {
         },
         {
             name: "Kapasitas",
-            selector: (row) => row.capacity,
+            selector: (row) => row.capacity + ' Siswa',
             sortable: false,
         },
         {
@@ -46,9 +46,11 @@ const Activity: React.FC = () => {
             selector: (row) => row.brochure,
             sortable: false,
             cell: (row) => (
-                <Badge pill color={row.brochure === '1' ? 'success' : 'danger'}>
-                    {row.brochure === '1' ? 'Ya' : 'Tidak'}
-                </Badge>
+               <Link to={String(row.brochure)}>
+                   <Button outline color="info" size="sm">
+                       <Icon name="eye"/>
+                   </Button>
+               </Link>
             ),
         },
         {
@@ -78,10 +80,10 @@ const Activity: React.FC = () => {
     ];
 
     useEffect(() => {
-        getActivity({yearId: year?.id, institutionId: id}).then((resp) => {
+        getActivity({list: 'table', institutionId: id}).then((resp) => {
             if (resp) setActivities(resp)
-        })
-    }, [id, year]);
+        }).finally(() => setLoadData(false))
+    }, [id, year, loadData]);
 
     return (
         <React.Fragment>

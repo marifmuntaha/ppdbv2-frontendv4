@@ -68,10 +68,12 @@ class apiCore {
         for (const k in data) {
             if (Array.isArray(data[k])) {
                 for (const key in data[k]) {
-                    formData.append(`${k}[]`, data[k][key]);
+                    const value = data[k][key] === undefined ? "" : data[k][key];
+                    formData.append(`${k}[]`, value);
                 }
             } else {
-                formData.append(k, data[k]);
+                const value = data[k] === undefined ? "" : data[k];
+                formData.append(k, value);
             }
         }
         const config = {
@@ -90,10 +92,12 @@ class apiCore {
         for (const k in data) {
             if (Array.isArray(data[k])) {
                 for (const key in data[k]) {
-                    formData.append(`${k}[]`, data[k][key]);
+                    const value = data[k][key] === undefined ? "" : data[k][key];
+                    formData.append(`${k}[]`, value);
                 }
             } else {
-                formData.append(k, data[k]);
+                const value = data[k] === undefined ? "" : data[k];
+                formData.append(k, value);
             }
         }
         formData.append('_method', 'put');
@@ -113,7 +117,7 @@ class apiCore {
     };
 
     setLoggedInUser = (session: AuthenticationType | undefined) => {
-        if (session) {
+        if (session?.token !== undefined) {
             localStorage.setItem('__PMB_TOKEN_SERVICE__', session.token);
         } else {
             localStorage.removeItem('__PMB_TOKEN_SERVICE__');
@@ -122,7 +126,7 @@ class apiCore {
 
     getLoggedInUser = (): AuthenticationType | undefined => {
         const token = localStorage.getItem('__PMB_TOKEN_SERVICE__');
-        return token ? {token: token}: undefined;
+        return token ? {token: token} : undefined;
     };
 
     setUserInSession = (modifiedUser: AuthenticationType) => {

@@ -13,6 +13,13 @@ import InstitutionList from "@/pages/institution/list";
 import InstitutionDetails from "@/pages/institution/detail";
 import Logout from "@/pages/auth/logout";
 import Error404 from "@/pages/error/error404";
+import Boarding from "@/pages/master/boarding";
+import PhoneVerification from "@/pages/auth/phone-verification";
+import StudentRegister from '@/pages/register'
+import Payment from "@/pages/payment";
+import PaymentDetail from "@/pages/payment/detail"
+import File from "@/pages/file";
+import Validation from "@/pages/validation";
 
 interface ScrollToTopProps {
     children: ReactNode;
@@ -37,8 +44,15 @@ const Router: React.FC = () => {
                             <Route element={<ProtectedRoute/>}>
                                 <Route path='/dashboard' element={<Dashboard/>}/>
                                 <Route path='/master-data/tahun-pelajaran' element={<Year/>}/>
+                                <Route path='/master-data/program-boarding' element={<Boarding/>}/>
                                 <Route path='/lembaga/:id/detail' element={<InstitutionDetails/>}/>
                                 <Route path='/lembaga/data-lembaga' element={<InstitutionList/>}/>
+                                <Route path="/pendaftaran" element={<StudentRegister/>}/>
+                                <Route path="/unggah-berkas" element={<File/>}/>
+                                <Route path="/validasi-pendaftaran" element={<Validation/>}/>
+
+                                <Route path="/pembayaran" element={<Payment/>}/>
+                                <Route path="/pembayaran/:id/lihat" element={<PaymentDetail/>}/>
                             </Route>
                             <Route path='/' element={<Dashboard/>}/>
                         </Route>
@@ -46,6 +60,7 @@ const Router: React.FC = () => {
                             <Route path="/auth/masuk" element={<Login/>}/>
                             <Route path="/auth/buat-akun" element={<Register/>}/>
                             <Route path="/auth/lupa-sandi" element={<ForgetPassword/>}/>
+                            <Route path="/auth/verifikasi" element={<PhoneVerification/>}/>
                             <Route element={<ProtectedRoute/>}>
                                 <Route path="/auth/keluar" element={<Logout/>}/>
                             </Route>

@@ -1,4 +1,4 @@
-import type {YearType} from "@/types";
+import type {OptionsType, YearType} from "@/types";
 
 export type InstitutionType = {
     id: number|undefined;
@@ -30,7 +30,7 @@ export type InstitutionFormType = {
     email: string,
     website: string,
     head: string,
-    logo?: any,
+    file?: any,
 }
 
 export type InstitutionActivityType = {
@@ -38,7 +38,8 @@ export type InstitutionActivityType = {
     yearId: number|undefined;
     institutionId: number|string|undefined;
     capacity: string,
-    brochure?: any,
+    brochure?: string,
+    file?: any
     createdBy?: number|undefined,
     updatedBy?: number|undefined,
     year?: YearType|undefined,
@@ -50,5 +51,49 @@ export type InstitutionActivityFormType = {
     yearId: number|undefined;
     institutionId: number|string|undefined;
     capacity: string,
-    brochure: string
+    file: any,
+}
+
+export type InstitutionProgramType = {
+    id?: number|undefined;
+    yearId: number|undefined;
+    institutionId: number|string|undefined;
+    name: string,
+    alias: string,
+    description: string,
+    boarding: string,
+    createdBy?: string,
+    updatedBy?: string,
+}
+
+export type InstitutionProgramFormType = {
+    id?: number|undefined;
+    yearId: number|undefined;
+    institutionId: number|string|undefined;
+    name: string,
+    alias: string,
+    description: string,
+    boarding: OptionsType[]
+}
+
+export type InstitutionPeriodType = {
+    id?: number|undefined;
+    yearId: number|undefined;
+    institutionId: number|string|undefined;
+    name: string,
+    description: string|undefined,
+    start: string|undefined,
+    end: string|undefined,
+    createdBy?: string,
+    updatedBy?: string,
+}
+
+export type InstitutionPeriodFormType = {
+    id?: number|undefined;
+    yearId: number|undefined;
+    institutionId: number|string|undefined;
+    name: string,
+    description: string|undefined,
+    start: Date|undefined,
+    end: Date|undefined,
 }

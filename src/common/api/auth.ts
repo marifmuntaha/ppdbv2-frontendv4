@@ -30,27 +30,27 @@ async function login(params: Record<string, any>): Promise<AuthenticationType|un
         })
 }
 
-async function storeVerifyPhone(params: Record<string, any>): Promise<VerifyPhoneType | false> {
+async function storeVerifyPhone(params: Record<string, any>): Promise<AuthenticationType | undefined> {
     const baseUrl = '/auth/phone-verify';
-    return await api.create(baseUrl, params, true)
-        .then((resp: ApiResponseInterface<any>) => {
+    return await api.create<AuthenticationType>(baseUrl, params, true)
+        .then((resp: ApiResponseInterface<AuthenticationType>) => {
             if (resp.status === 'success') {
                 api.setLoggedInUser(resp.result);
-                return resp.result as VerifyPhoneType
+                return resp.result
             } else {
-                return false
+                return undefined
             }
         })
 }
 
-async function getVerifyPhone(params: Record<string, any>): Promise<VerifyPhoneType | false> {
+async function getVerifyPhone(params: Record<string, any>): Promise<VerifyPhoneType | undefined> {
     const baseUrl = '/auth/get-phone-verify';
-    return await api.create(baseUrl, params, true)
-        .then((resp: ApiResponseInterface<any>) => {
+    return await api.create<VerifyPhoneType>(baseUrl, params, true)
+        .then((resp: ApiResponseInterface<VerifyPhoneType>) => {
             if (resp.status === 'success') {
-                return resp.result as VerifyPhoneType
+                return resp.result
             } else {
-                return false
+                return
             }
         })
 }
