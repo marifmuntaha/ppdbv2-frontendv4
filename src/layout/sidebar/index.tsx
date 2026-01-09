@@ -5,7 +5,7 @@ import Logo from "../logo";
 import Menu, {type MenuItem} from "../menu";
 import Toggle from "./toggle";
 
-import { useTheme, useThemeUpdate } from '../../common/hooks/useTheme';
+import { useTheme, useThemeUpdate } from '@/common/hooks/useTheme';
 
 interface SidebarProps {
     fixed?: boolean;

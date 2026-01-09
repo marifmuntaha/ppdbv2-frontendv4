@@ -69,7 +69,7 @@ const File = () => {
                     </BlockHead>
                 </Block>
                 <Row className="gy-0 mt-3">
-                    <Col size={8}>
+                    <Col md={8}>
                         <PreviewCard>
                             <form className="is-alter" onSubmit={handleSubmit(onSubmit)}>
                                 <Row className="gy-0">

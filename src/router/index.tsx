@@ -20,6 +20,7 @@ import Payment from "@/pages/payment";
 import PaymentDetail from "@/pages/payment/detail"
 import File from "@/pages/file";
 import Validation from "@/pages/validation";
+import Product from "@/pages/treasurer/product";
 
 interface ScrollToTopProps {
     children: ReactNode;
@@ -51,6 +52,8 @@ const Router: React.FC = () => {
                                 <Route path="/unggah-berkas" element={<File/>}/>
                                 <Route path="/validasi-pendaftaran" element={<Validation/>}/>
 
+                                //Route bendahara
+                                <Route path="/bendahara/item-pembayaran" element={<Product/>}/>
                                 <Route path="/pembayaran" element={<Payment/>}/>
                                 <Route path="/pembayaran/:id/lihat" element={<PaymentDetail/>}/>
                             </Route>

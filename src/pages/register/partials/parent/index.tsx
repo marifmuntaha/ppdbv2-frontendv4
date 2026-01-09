@@ -120,14 +120,16 @@ const Parent = () => {
                     </div>
                 </div>
                 <hr/>
-                <Col size={6}>
+                <Col md={6}>
                     <ParentFather methods={methods} />
                 </Col>
-                <Col size={6} className="mb-3">
+                <Col md={6} className="mb-3">
                     <ParentMother methods={methods} />
                 </Col>
                 <hr/>
-                <ParentGuard methods={methods}/>
+                <Col md={12}>
+                    <ParentGuard methods={methods}/>
+                </Col>
                 <div className="form-group">
                     <Button color="primary" type="submit" disabled={loading}>
                         {loading ? (<Spinner size="sm"/>) : (

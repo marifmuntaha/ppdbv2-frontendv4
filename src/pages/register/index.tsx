@@ -54,7 +54,7 @@ const StudentRegister = () => {
                         </BlockBetween>
                     </BlockHead>
                     <Row className="gy-0">
-                        <Col size={10}>
+                        <Col md={10}>
                             <PreviewCard>
                                 <Nav tabs>
                                     <NavItem>

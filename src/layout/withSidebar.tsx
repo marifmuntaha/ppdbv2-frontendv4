@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import {menuDefault, menuAdmin, menuStudent} from "./sidebar/MenuData";
+import {menuDefault, menuAdmin, menuStudent, menuTreasurer} from "./sidebar/MenuData";
 import Sidebar from "./sidebar";
 import Head from "./head";
 import Header from "./header";
@@ -16,6 +16,8 @@ export const WithSidebar = ({ title } : {title?:string}) => {
         switch (user?.role) {
             case "1":
                 return menuAdmin
+            case "3":
+                return menuTreasurer
             case "4":
                 return menuStudent
             default:

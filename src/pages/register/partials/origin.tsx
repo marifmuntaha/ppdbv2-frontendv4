@@ -75,7 +75,7 @@ const Origin = () => {
                         <input
                             type="text"
                             className="form-control"
-                            placeholder="Ex. 1234512345123456"
+                            placeholder="Ex. Jl. Raya Jepara-Bugel KM 07 Menganti"
                             {...register('address', {
                                 required: 'Kolom tidak boleh kosong',
                             })}

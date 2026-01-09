@@ -3,25 +3,41 @@ import Head from "@/layout/head";
 import Content from "@/layout/content";
 import {Block, BlockBetween, BlockDes, BlockHead, BlockHeadContent, BlockTitle, Col, Row} from "@/components";
 import {useAuthContext} from "@/common/hooks/useAuthContext";
-import type {StudentAddressType, StudentParentType, StudentPersonalType, StudentProgramType} from "@/types";
+import type {
+    StudentAchievementType,
+    StudentAddressType, StudentFileType,
+    StudentOriginType,
+    StudentParentType,
+    StudentPersonalType,
+    StudentProgramType
+} from "@/types";
 import {get as getPersonal} from "@/common/api/student/personal";
 import {get as getParent} from "@/common/api/student/parent";
 import {get as getProgram} from "@/common/api/student/program";
-import {get as getAddress} from "@/common/api/student/address"
+import {get as getAddress} from "@/common/api/student/address";
+import {get as getOrigin} from "@/common/api/student/origin";
+import {get as getAchievement} from "@/common/api/student/achievement";
+import {get as getFile} from "@/common/api/student/file";
 import moment from "moment/moment";
-import {Card} from "reactstrap";
+import {Button, Card} from "reactstrap";
 import {getGender} from "@/helpers";
 import {GUARD_STATUS, PARENT_JOB_OPTIONS, PARENT_STATUS, PARENT_STUDY_OPTIONS} from "@/common/constants";
+import AchievementTable from "@/components/partials/achievement/table";
+import Confirm from "@/pages/validation/partials/confirm";
 
 type ValidationType = {
     personal?: StudentPersonalType,
-    parent? : StudentParentType,
-    address? : StudentAddressType,
-    program?: StudentProgramType
+    parent?: StudentParentType,
+    address?: StudentAddressType,
+    program?: StudentProgramType,
+    origin?: StudentOriginType,
+    achievements?: StudentAchievementType[],
+    file?: StudentFileType
 }
 const Validation = () => {
     const {user} = useAuthContext();
     const [student, setStudent] = useState<ValidationType>()
+    const [modal, setModal] = useState<boolean>(false)
 
     useEffect(() => {
         getPersonal({userId: user?.id}).then((resp) => {
@@ -44,10 +60,23 @@ const Validation = () => {
                 setStudent(student => ({...student, program: resp[0]}))
             }
         })
+        getOrigin({userId: user?.id}).then((resp) => {
+            if (resp.length > 0) {
+                setStudent(student => ({...student, origin: resp[0]}))
+            }
+        });
+        getAchievement({userId: user?.id}).then((resp) => {
+            if (resp.length > 0) {
+                setStudent(student => ({...student, achievements: resp}))
+            }
+        })
+        getFile({userId: user?.id}).then((resp) =>{
+            if (resp.length > 0) {
+                setStudent(student => ({...student, file: resp[0]}))
+            }
+        })
     }, []);
-    useEffect(() => {
-        console.log(student)
-    }, [student]);
+
     return (
         <React.Fragment>
             <Head title="Validasi Pendaftaran"/>
@@ -63,7 +92,8 @@ const Validation = () => {
                                     <li>NIK: <span className="text-base">{student?.personal?.nik}</span></li>
                                     <li>
                                         Tanggal Pendaftaran:{" "}
-                                        <span className="text-base">{moment(student?.program?.created_at).format('DD MMM YYYY')}</span>
+                                        <span
+                                            className="text-base">{moment(student?.program?.created_at).format('DD MMM YYYY')}</span>
                                     </li>
                                 </ul>
                             </BlockDes>
@@ -108,7 +138,8 @@ const Validation = () => {
                                     <li className="data-item">
                                         <div className="data-col">
                                             <div className="data-label">Tempat, Tanggal Lahir</div>
-                                            <div className="data-value">{student?.personal?.birthPlace}, {moment(student?.personal?.birthDate).format('DD MMMM YYYY')}</div>
+                                            <div
+                                                className="data-value">{student?.personal?.birthPlace}, {moment(student?.personal?.birthDate).format('DD MMMM YYYY')}</div>
                                         </div>
                                     </li>
                                     <li className="data-item">
@@ -133,156 +164,6 @@ const Validation = () => {
                             </Card>
                             <BlockHead>
                                 <BlockHeadContent>
-                                    <BlockTitle tag="h5">Informasi Orangtua</BlockTitle>
-                                    <p>Informasi Orangtua dan wali pendaftar</p>
-                                </BlockHeadContent>
-                            </BlockHead>
-                            <Card>
-                                <ul className="data-list is-compact">
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Nomor Kartu Keluarga</div>
-                                            <div className="data-value">{student?.parent?.numberKk}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Nama Kepala Keluarga</div>
-                                            <div className="data-value">{student?.parent?.headFamily}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Status Ayah Kandung</div>
-                                            <div className="data-value">{PARENT_STATUS.find((item) => item.value === student?.parent?.fatherStatus)?.label}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Nama Ayah Kandung</div>
-                                            <div className="data-value">{student?.parent?.fatherName}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">NIK Ayah Kandung</div>
-                                            <div className="data-value">{student?.parent?.fatherNik}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Tempat, Tanggal Lahir Ayah Kandung</div>
-                                            <div className="data-value">{student?.parent?.fatherBirthPlace}, {moment(student?.parent?.fatherBirthDate).format('DD MMMM YYYY')}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Pendidikan Ayah Kandung</div>
-                                            <div className="data-value">{PARENT_STUDY_OPTIONS.find((item) => item.value === student?.parent?.fatherStudy)?.label}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Pekerjaan Ayah Kandung</div>
-                                            <div className="data-value">{PARENT_JOB_OPTIONS.find((item) => item.value === student?.parent?.fatherJob)?.label}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Nomor HP Ayah Kandung</div>
-                                            <div className="data-value">{student?.parent?.fatherPhone}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Status Ibu Kandung</div>
-                                            <div className="data-value">{PARENT_STATUS.find((item) => item.value === student?.parent?.motherStatus)?.label}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Nama Ibu Kandung</div>
-                                            <div className="data-value">{student?.parent?.motherName}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">NIK Ibu Kandung</div>
-                                            <div className="data-value">{student?.parent?.motherNik}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Tempat, Tanggal Lahir Ibu Kandung</div>
-                                            <div className="data-value">{student?.parent?.motherBirthPlace}, {moment(student?.parent?.motherBirthDate).format('DD MMMM YYYY')}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Pendidikan Ibu Kandung</div>
-                                            <div className="data-value">{PARENT_STUDY_OPTIONS.find((item) => item.value === student?.parent?.motherStudy)?.label}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Pekerjaan Ibu Kandung</div>
-                                            <div className="data-value">{PARENT_JOB_OPTIONS.find((item) => item.value === student?.parent?.motherJob)?.label}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Nomor HP Ibu Kandung</div>
-                                            <div className="data-value">{student?.parent?.motherPhone}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Status Wali Siswa</div>
-                                            <div className="data-value">{GUARD_STATUS.find((item) => item.value === student?.parent?.guardStatus)?.label}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Nama Wali Siswa</div>
-                                            <div className="data-value">{student?.parent?.guardName}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">NIK Wali Siswa</div>
-                                            <div className="data-value">{student?.parent?.guardNik}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Tempat, Tanggal Lahir Wali Siswa</div>
-                                            <div className="data-value">{student?.parent?.guardBirthPlace}, {moment(student?.parent?.guardBirthDate).format('DD MMMM YYYY')}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Pendidikan Wali Siswa</div>
-                                            <div className="data-value">{PARENT_STUDY_OPTIONS.find((item) => item.value === student?.parent?.guardStudy)?.label}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Pekerjaan Wali Siswa</div>
-                                            <div className="data-value">{PARENT_JOB_OPTIONS.find((item) => item.value === student?.parent?.guardJob)?.label}</div>
-                                        </div>
-                                    </li>
-                                    <li className="data-item">
-                                        <div className="data-col">
-                                            <div className="data-label">Nomor HP Wali Siswa</div>
-                                            <div className="data-value">{student?.parent?.guardPhone}</div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </Card>
-                        </Col>
-                        <Col size={6}>
-                            <BlockHead>
-                                <BlockHeadContent>
                                     <BlockTitle tag="h5">Informasi Tempat Tinggal</BlockTitle>
                                     <p>Informasi Tempat Tinggal Pendaftar</p>
                                 </BlockHeadContent>
@@ -292,25 +173,29 @@ const Validation = () => {
                                     <li className="data-item">
                                         <div className="data-col">
                                             <div className="data-label">Provinsi</div>
-                                            <div className="data-value">{student?.address && JSON.parse(student.address?.province)?.label}</div>
+                                            <div
+                                                className="data-value">{student?.address && JSON.parse(student.address?.province)?.label}</div>
                                         </div>
                                     </li>
                                     <li className="data-item">
                                         <div className="data-col">
                                             <div className="data-label">Kota/Kabupaten</div>
-                                            <div className="data-value">{student?.address && JSON.parse(student.address?.city)?.label}</div>
+                                            <div
+                                                className="data-value">{student?.address && JSON.parse(student.address?.city)?.label}</div>
                                         </div>
                                     </li>
                                     <li className="data-item">
                                         <div className="data-col">
                                             <div className="data-label">Kecamatan</div>
-                                            <div className="data-value">{student?.address && JSON.parse(student.address?.district)?.label}</div>
+                                            <div
+                                                className="data-value">{student?.address && JSON.parse(student.address?.district)?.label}</div>
                                         </div>
                                     </li>
                                     <li className="data-item">
                                         <div className="data-col">
                                             <div className="data-label">Kelurahan/Desa</div>
-                                            <div className="data-value">{student?.address && JSON.parse(student.address?.village).label}</div>
+                                            <div
+                                                className="data-value">{student?.address && JSON.parse(student.address?.village).label}</div>
                                         </div>
                                     </li>
                                     <li className="data-item">
@@ -361,10 +246,274 @@ const Validation = () => {
                                     </li>
                                 </ul>
                             </Card>
+                            <BlockHead>
+                                <BlockHeadContent>
+                                    <BlockTitle tag="h5">Informasi Sekolah Asal</BlockTitle>
+                                    <p>Informasi Sekolah Asal</p>
+                                </BlockHeadContent>
+                            </BlockHead>
+                            <Card>
+                                <ul className="data-list is-compact">
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Nama Lembaga</div>
+                                            <div className="data-value">{student?.origin?.name}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">NPSN</div>
+                                            <div className="data-value">{student?.origin?.npsn}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Alamat</div>
+                                            <div className="data-value">{student?.origin?.address}</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </Card>
+                            <BlockHead>
+                                <BlockHeadContent>
+                                    <BlockTitle tag="h5">Data Prestasi</BlockTitle>
+                                    <p>Data Prestasi Pendaftar</p>
+                                </BlockHeadContent>
+                            </BlockHead>
+                            <Card>
+                                <AchievementTable
+                                    achievements={student?.achievements}
+                                    withImage={false}
+                                    withAction={false}
+                                    withAdd={false}
+                                />
+                            </Card>
+                        </Col>
+                        <Col md={6}>
+                            <BlockHead>
+                                <BlockHeadContent>
+                                    <BlockTitle tag="h5">Informasi Orangtua</BlockTitle>
+                                    <p>Informasi Orangtua dan wali pendaftar</p>
+                                </BlockHeadContent>
+                            </BlockHead>
+                            <Card>
+                                <ul className="data-list is-compact">
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Nomor Kartu Keluarga</div>
+                                            <div className="data-value">{student?.parent?.numberKk}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Nama Kepala Keluarga</div>
+                                            <div className="data-value">{student?.parent?.headFamily}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Status Ayah Kandung</div>
+                                            <div
+                                                className="data-value">{PARENT_STATUS.find((item) => item.value === student?.parent?.fatherStatus)?.label}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Nama Ayah Kandung</div>
+                                            <div className="data-value">{student?.parent?.fatherName}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">NIK Ayah Kandung</div>
+                                            <div className="data-value">{student?.parent?.fatherNik}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Tempat, Tanggal Lahir Ayah Kandung</div>
+                                            <div
+                                                className="data-value">{student?.parent?.fatherBirthPlace}, {moment(student?.parent?.fatherBirthDate).format('DD MMMM YYYY')}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Pendidikan Ayah Kandung</div>
+                                            <div
+                                                className="data-value">{PARENT_STUDY_OPTIONS.find((item) => item.value === student?.parent?.fatherStudy)?.label}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Pekerjaan Ayah Kandung</div>
+                                            <div
+                                                className="data-value">{PARENT_JOB_OPTIONS.find((item) => item.value === student?.parent?.fatherJob)?.label}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Nomor HP Ayah Kandung</div>
+                                            <div className="data-value">{student?.parent?.fatherPhone}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Status Ibu Kandung</div>
+                                            <div
+                                                className="data-value">{PARENT_STATUS.find((item) => item.value === student?.parent?.motherStatus)?.label}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Nama Ibu Kandung</div>
+                                            <div className="data-value">{student?.parent?.motherName}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">NIK Ibu Kandung</div>
+                                            <div className="data-value">{student?.parent?.motherNik}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Tempat, Tanggal Lahir Ibu Kandung</div>
+                                            <div
+                                                className="data-value">{student?.parent?.motherBirthPlace}, {moment(student?.parent?.motherBirthDate).format('DD MMMM YYYY')}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Pendidikan Ibu Kandung</div>
+                                            <div
+                                                className="data-value">{PARENT_STUDY_OPTIONS.find((item) => item.value === student?.parent?.motherStudy)?.label}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Pekerjaan Ibu Kandung</div>
+                                            <div
+                                                className="data-value">{PARENT_JOB_OPTIONS.find((item) => item.value === student?.parent?.motherJob)?.label}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Nomor HP Ibu Kandung</div>
+                                            <div className="data-value">{student?.parent?.motherPhone}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Status Wali Siswa</div>
+                                            <div
+                                                className="data-value">{GUARD_STATUS.find((item) => item.value === student?.parent?.guardStatus)?.label}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Nama Wali Siswa</div>
+                                            <div className="data-value">{student?.parent?.guardName}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">NIK Wali Siswa</div>
+                                            <div className="data-value">{student?.parent?.guardNik}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Tempat, Tanggal Lahir Wali Siswa</div>
+                                            <div
+                                                className="data-value">{student?.parent?.guardBirthPlace}, {moment(student?.parent?.guardBirthDate).format('DD MMMM YYYY')}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Pendidikan Wali Siswa</div>
+                                            <div
+                                                className="data-value">{PARENT_STUDY_OPTIONS.find((item) => item.value === student?.parent?.guardStudy)?.label}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Pekerjaan Wali Siswa</div>
+                                            <div
+                                                className="data-value">{PARENT_JOB_OPTIONS.find((item) => item.value === student?.parent?.guardJob)?.label}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Nomor HP Wali Siswa</div>
+                                            <div className="data-value">{student?.parent?.guardPhone}</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </Card>
+
+                            <BlockHead>
+                                <BlockHeadContent>
+                                    <BlockTitle tag="h5">Berkas Pendaftaran</BlockTitle>
+                                    <p>Berkas Pendaftaran</p>
+                                </BlockHeadContent>
+                            </BlockHead>
+                            <Card>
+                                <ul className="data-list is-compact">
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Kartu Keluarga</div>
+                                            <div className="data-value">{student?.file?.fileKk ? "Terunggah" : 'Belum diunggah'}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">KTP Wali</div>
+                                            <div className="data-value">{student?.file?.fileKtp ? "Terunggah" : 'Belum diunggah'}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Akta Kelahiran</div>
+                                            <div className="data-value">{student?.file?.fileAkta ? "Terunggah" : 'Belum diunggah'}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Ijazah</div>
+                                            <div className="data-value">{student?.file?.fileIjazah ? "Terunggah" : '-'}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Surat Keterangan Lulus</div>
+                                            <div className="data-value">{student?.file?.fileSkl ? "Terunggah" : '-'}</div>
+                                        </div>
+                                    </li>
+                                    <li className="data-item">
+                                        <div className="data-col">
+                                            <div className="data-label">Kartu Indonesia Pintar</div>
+                                            <div className="data-value">{student?.file?.fileKip ? "Terunggah" : '-'}</div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </Card>
+                        </Col>
+                        <Col md={12}>
+                            <Card className="p-3">
+                                <span className="text-muted ff-italic">
+                                    Pastikan semua data yang Anda masukkan sudah benar, karena setelah menekan tombol verifikasi, data tidak dapat diubah lagi.
+                                </span>
+                                <Col md={3}>
+                                <Button size="md" color="success" className="mt-3" onClick={() => setModal(true)}>
+                                    VERIFIKASI DATA
+                                </Button>
+                                </Col>
+                            </Card>
                         </Col>
                     </Row>
                 </Block>
             </Content>
+            <Confirm modal={modal} setModal={setModal} student={student}/>
         </React.Fragment>
     )
 }

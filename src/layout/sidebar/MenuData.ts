@@ -73,6 +73,20 @@ const menuStudent = [
 
 ];
 
+const menuTreasurer = [
+    {
+        icon: "monitor",
+        text: "Beranda",
+        link: "/dashboard",
+    },
+    {
+        icon: "list",
+        text: "Item Pembayaran",
+        link: "/bendahara/item-pembayaran",
+    },
+
+];
+
 const menuDefault = [
     {
         icon: "monitor",
@@ -107,4 +121,4 @@ const menuDefault = [
 
 ];
 
-export {menuDefault, menuAdmin, menuStudent} ;
+export {menuDefault, menuAdmin, menuTreasurer, menuStudent} ;
