@@ -4,6 +4,7 @@ import {show as showInstitution} from "@/common/api/institution"
 import { InstitutionContext } from "@/common/hooks/useInstitutionContext";
 import {Loading} from "@/components";
 import {useAuthContext} from "@/common/hooks/useAuthContext";
+import {ROLE_INSTITUTION} from "@/common/constants";
 
 export const InstitutionProvider = ({children} : {children: ReactNode}) => {
     const {user} = useAuthContext()
@@ -13,7 +14,7 @@ export const InstitutionProvider = ({children} : {children: ReactNode}) => {
     useEffect(() => {
         const fetchYear = async () => {
             try {
-                await showInstitution({id: user?.institutionId}).then((resp) => {
+                if (user?.role && ROLE_INSTITUTION.includes(user.role)) await showInstitution({id: user?.institutionId}).then((resp) => {
                     setInstitution(resp)
                 })
             } catch (err) {
@@ -23,6 +24,7 @@ export const InstitutionProvider = ({children} : {children: ReactNode}) => {
             }
         }
         fetchYear()
+        console.log(user)
     }, [loading]);
 
     if (loading) return <Loading/>

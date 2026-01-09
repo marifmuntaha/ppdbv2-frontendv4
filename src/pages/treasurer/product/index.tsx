@@ -1,22 +1,113 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Head from "@/layout/head";
 import Content from "@/layout/content";
-import {Block, BlockBetween, BlockHead, BlockHeadContent, BlockTitle, Button, Icon} from "@/components";
+import {
+    Block,
+    BlockBetween,
+    BlockHead,
+    BlockHeadContent,
+    BlockTitle,
+    Button,
+    Icon,
+    PreviewCard,
+    ReactDataTable
+} from "@/components";
 import {useYearContext} from "@/common/hooks/useYearContext";
 import Partial from "./partial";
+import type {ColumnType, ProductType} from "@/types";
+import {get as getProduct, destroy as destroyProduct} from "@/common/api/product";
+import {useInstitutionContext} from "@/common/hooks/useInstitutionContext";
+import {ButtonGroup, Spinner} from "reactstrap";
+import {fetchProductOption, formatIDR} from "@/helpers";
 
 const Product = () => {
     const year = useYearContext()
+    const institution = useInstitutionContext()
     const [sm, updateSm] = useState(false)
     const [modal, setModal] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState<boolean|string|number|undefined>(false)
     const [loadData, setLoadData] = useState(true)
-    const [products, setProducts] = useState([])
-    const [product, setProduct] = useState({})
+    const [products, setProducts] = useState<ProductType[]>([])
+    const [product, setProduct] = useState<ProductType>({
+        id: undefined,
+        name: '',
+        surname: '',
+        price: '',
+        gender: '',
+        program: '',
+        boarding: ''
+    })
+
+    const Column: ColumnType<ProductType>[] = [
+        {
+            name: "Nama",
+            selector: (row) => row.name,
+            sortable: false,
+        },
+        {
+            name: "Alias",
+            selector: (row) => row.surname,
+            sortable: false,
+        },
+        {
+            name: "Harga",
+            selector: (row) => formatIDR(row.price),
+            sortable: false,
+        },
+        {
+            name: "JK",
+            selector: (row) => row.gender,
+            sortable: false,
+            cell: (row) => fetchProductOption(row.gender)
+        },
+        {
+            name: "Program",
+            selector: (row) => row.program,
+            sortable: false,
+            cell: (row) => fetchProductOption(row.program)
+        },
+        {
+            name: "Program",
+            selector: (row) => row.boarding,
+            sortable: false,
+            cell: (row) => fetchProductOption(row.boarding)
+        },
+        {
+            name: "Aksi",
+            selector: (row) => row?.id,
+            sortable: false,
+            width: "150px",
+            cell: (row) => (
+                <ButtonGroup size="sm">
+                    <Button outline color="warning" onClick={() => {
+                        setProduct(row);
+                        setModal(true);
+                    }}>
+                        <Icon name="pen"/>
+                    </Button>
+                    <Button outline color="danger" onClick={async () => {
+                        setLoading(row?.id);
+                        await destroyProduct(row?.id)
+                            .then(() => setLoadData(true))
+                            .finally(() => setLoading(false));
+                    }}>
+                        {loading === row.id ? <Spinner size="sm"/> : <Icon name="trash"/>}
+                    </Button>
+                </ButtonGroup>
+            ),
+        },
+    ];
+
+    useEffect(() => {
+        if (loadData) getProduct<ProductType>({yearId: year?.id, institutionId: institution?.id})
+            .then((resp) => setProducts(resp))
+            .finally(() => setLoadData(false));
+    }, [loadData])
+
     return (
         <React.Fragment>
             <Head title="Item Pembayaran"/>
-            <Content page="component">
+            <Content>
                 <Block size="lg">
                     <BlockHead>
                         <BlockBetween>
@@ -50,6 +141,9 @@ const Product = () => {
                         </BlockBetween>
                     </BlockHead>
                 </Block>
+                <PreviewCard>
+                    <ReactDataTable data={products} columns={Column} pagination progressPending={loadData}/>
+                </PreviewCard>
                 <Partial modal={modal} setModal={setModal} product={product} setProduct={setProduct} setLoadData={setLoadData}/>
             </Content>
 

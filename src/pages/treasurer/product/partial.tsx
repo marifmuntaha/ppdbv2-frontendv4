@@ -1,19 +1,21 @@
 import React, {useEffect, useState} from "react";
 import {Button, Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
-import {Controller, useForm} from "react-hook-form";
+import {Controller, useForm, useWatch} from "react-hook-form";
 import {Icon, Row, RSelect} from "@/components";
-import {store as storeYear, update as updateYear} from "@/common/api/master/year";
+import {store as storeProduct, update as updateProduct} from "@/common/api/product";
 import {get as getProgram} from "@/common/api/institution/program";
-import type {OptionsType, YearFormType, YearType} from "@/types";
+import {get as getBoarding} from "@/common/api/master/boarding";
+import type {OptionsType, ProductFormType, ProductType} from "@/types";
 import {GENDER_OPTIONS} from "@/common/constants";
 import {useYearContext} from "@/common/hooks/useYearContext";
 import {useInstitutionContext} from "@/common/hooks/useInstitutionContext";
+import {numberFormat} from "@/helpers";
 
 interface PartialProps {
     modal: boolean;
     setModal: (modal: boolean) => void;
-    product: YearType
-    setProduct: (product: YearType) => void;
+    product: ProductType
+    setProduct: (product: ProductType) => void;
     setLoadData: (loadData: boolean) => void;
 }
 
@@ -22,39 +24,39 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
     const institution = useInstitutionContext()
     const [loading, setLoading] = useState(false);
     const [programOptions, setProgramOptions] = useState<OptionsType[]>()
-    const activeOptions: OptionsType[] = [
-        {value: '1', label: "Ya"},
-        {value: '2', label: "Tidak"},
+    const [boardingOptions, setBoardingOptions] = useState<OptionsType[]>()
+    const {control, reset, handleSubmit, register, formState: {errors}, setValue} = useForm<ProductFormType>();
+    const genderOptions: OptionsType[] = [
+        {value: '0', label: 'Semua'},
+        ...GENDER_OPTIONS
     ]
-    const {
-        control,
-        reset,
-        handleSubmit,
-        register,
-        formState: {errors},
-        setValue
-    } = useForm<YearFormType>();
-
-    const onSubmit = (value: YearFormType) => {
-        const formData: YearType = {
-            id: value.id,
-            name: value.name,
-            description: value.description,
-            active: value.active?.value
+    const onSubmit = (values: ProductFormType) => {
+        const formData: ProductType = {
+            id: product?.id,
+            yearId: year?.id,
+            institutionId: institution?.id,
+            name: values.name,
+            surname: values.surname,
+            price: String(values.price).replace(/[^0-9]/g, ''),
+            gender: values.gender ? JSON.stringify(values.gender) : '',
+            program: values.program ? JSON.stringify(values.program) : '',
+            boarding: values.boarding ? JSON.stringify(values.boarding) : '',
         }
-        if (product.id === undefined) onStore(formData)
+        if (product?.id === undefined) onStore(formData)
         else onUpdate(formData);
     }
-    const onStore = async (value: YearType) => {
+    const onStore = async (value: ProductType) => {
         setLoading(true);
-        await storeYear(value).then(() => {
-            toggle()
-            setLoadData(true)
+        await storeProduct(value).then((resp) => {
+            if (resp.status === 'success') {
+                toggle()
+                setLoadData(true)
+            }
         }).finally(() => setLoading(false));
     }
-    const onUpdate = async (value: YearType) => {
+    const onUpdate = async (value: ProductType) => {
         setLoading(true)
-        await updateYear(value).then(() => {
+        await updateProduct(value).then(() => {
             toggle()
             setLoadData(true)
         }).finally(() => setLoading(false));
@@ -63,8 +65,11 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
         setProduct({
             id: undefined,
             name: '',
-            description: '',
-            active: undefined
+            surname: '',
+            price: '',
+            gender: '',
+            program: '',
+            boarding: '',
         });
         reset();
     }
@@ -72,12 +77,35 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
         setModal(false);
         handleReset();
     };
+    const price = useWatch({control, name: 'price'})
+
     useEffect(() => {
         setValue('id', product.id);
         setValue('name', product.name);
-        setValue('description', product.description);
-        setValue('active', activeOptions.find((item) => item.value === product.active));
-        getProgram<OptionsType>({yearId: year?.id, institutionId: institution?.id, type: 'select'}).then((resp) => setProgramOptions(resp))
+        setValue('surname', product.surname)
+        setValue('price', product.price)
+        setValue('gender', product.gender && JSON.parse(product.gender))
+        getProgram<OptionsType>({yearId: year?.id, institutionId: institution?.id, type: 'select'})
+            .then((resp) => {
+                if (resp.length > 0) {
+                    setProgramOptions([{value: '0', label: 'Semua'}, ...resp]);
+                    const program = product.program !== '' ? JSON.parse(product.program) : []
+                    const programSelected: OptionsType[] = program.map((item: string) => {
+                        return resp.find((selected) => selected.value === item)
+                    })
+                    setValue('program', programSelected)
+                }
+            })
+        getBoarding<OptionsType>({type: 'select'}).then((resp) => {
+            if (resp.length > 0) {
+                setBoardingOptions([{value: '0', label: 'Semua'}, ...resp]);
+                const boarding = product.boarding !== '' ? JSON.parse(product.boarding) : []
+                const boardingSelected: OptionsType[] = boarding.map((item: string) => {
+                    return resp.find((selected) => item === selected.value)
+                })
+                setValue('boarding', boardingSelected)
+            }
+        })
     }, [product, setValue]);
 
     return (
@@ -87,80 +115,79 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
                     <Icon name="cross"/>
                 </button>
             }>
-                {product.id === undefined ? 'TAMBAH' : 'UBAH'}
+                {product?.id === undefined ? 'TAMBAH' : 'UBAH'}
             </ModalHeader>
             <ModalBody>
                 <form className="is-alter" onSubmit={handleSubmit(onSubmit)}>
                     <Row className="gy-0">
-                    <div className="form-group col-md-6">
-                        <label className="form-label" htmlFor="name">Nama Item</label>
-                        <div className="form-control-wrap">
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="name"
-                                placeholder="Ex. 2024/2025"
-                                {...register("name", {required: true})}
-                            />
-                            {errors.name && <span className="invalid">Kolom tidak boleh kosong</span>}
+                        <div className="form-group col-md-6">
+                            <label className="form-label" htmlFor="name">Nama Item</label>
+                            <div className="form-control-wrap">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="name"
+                                    placeholder="Ex. Seragam Madrasah"
+                                    {...register("name", {required: true})}
+                                />
+                                {errors.name && <span className="invalid">Kolom tidak boleh kosong</span>}
+                            </div>
                         </div>
-                    </div>
-                    <div className="form-group col-md-6">
-                        <label className="form-label" htmlFor="name">Alias</label>
-                        <div className="form-control-wrap">
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="name"
-                                placeholder="Ex. 2024/2025"
-                                {...register("name", {required: true})}
-                            />
-                            {errors.name && <span className="invalid">Kolom tidak boleh kosong</span>}
+                        <div className="form-group col-md-6">
+                            <label className="form-label" htmlFor="surname">Alias</label>
+                            <div className="form-control-wrap">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="surname"
+                                    placeholder="Ex. SRGM"
+                                    {...register("surname", {required: true})}
+                                />
+                                {errors.surname && <span className="invalid">Kolom tidak boleh kosong</span>}
+                            </div>
                         </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="name">Harga</label>
-                        <div className="form-control-wrap">
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="name"
-                                placeholder="Ex. 2024/2025"
-                                {...register("name", {required: true})}
-                            />
-                            {errors.name && <span className="invalid">Kolom tidak boleh kosong</span>}
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="active">Jenis Kelamin</label>
-                        <div className="form-control-wrap">
-                            <Controller
-                                control={control}
-                                name="gender"
-                                rules={{required: "Status tahun tidak boleh kosong"}}
-                                render={({field: {value, onChange}}) => (
-                                    <React.Fragment>
-                                        <RSelect
-                                            options={GENDER_OPTIONS}
-                                            value={value}
-                                            onChange={(selectedOption) => onChange(selectedOption)}
-                                            placeholder="Pilih Aktif"
-                                            isMulti={true}
-                                        />
-                                        <input type="hidden" id="active" className="form-control"/>
-                                        {errors.active && <span className="invalid">Kolom tidak boleh kosong.</span>}
-                                    </React.Fragment>
-                                )
-                                }/>
-                        </div>
-                    </div>
                         <div className="form-group">
-                            <label className="form-label" htmlFor="active">Program Madrasah</label>
+                            <label className="form-label" htmlFor="price">Harga</label>
+                            <div className="form-control-wrap">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="price"
+                                    placeholder="Ex. 1.000.000"
+                                    value={numberFormat(price)}
+                                    {...register("price", {required: true})}
+                                />
+                                {errors.price && <span className="invalid">Kolom tidak boleh kosong</span>}
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="gender">Jenis Kelamin</label>
+                            <div className="form-control-wrap">
+                                <Controller
+                                    control={control}
+                                    name="gender"
+                                    rules={{required: false}}
+                                    render={({field: {value, onChange}}) => (
+                                        <React.Fragment>
+                                            <RSelect
+                                                options={genderOptions}
+                                                value={value}
+                                                onChange={(selectedOption) => onChange(selectedOption)}
+                                                placeholder="Pilih Kelamin"
+                                                isMulti={true}
+                                            />
+                                        </React.Fragment>
+                                    )}
+                                />
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="program">Program Madrasah</label>
                             <div className="form-control-wrap">
                                 <Controller
                                     control={control}
                                     name="program"
-                                    rules={{required: "Status tahun tidak boleh kosong"}}
+                                    rules={{required: false}}
                                     render={({field: {value, onChange}}) => (
                                         <React.Fragment>
                                             <RSelect
@@ -170,18 +197,37 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
                                                 placeholder="Pilih Aktif"
                                                 isMulti={true}
                                             />
-                                            <input type="hidden" id="active" className="form-control"/>
-                                            {errors.active && <span className="invalid">Kolom tidak boleh kosong.</span>}
                                         </React.Fragment>
-                                    )
-                                    }/>
+                                    )}
+                                />
                             </div>
                         </div>
-                    <div className="form-group">
-                        <Button color="primary" type="submit" size="md">
-                            {loading ? <Spinner size="sm"/> : 'SIMPAN'}
-                        </Button>
-                    </div>
+                        <div className="form-group">
+                            <label className="form-label" htmlFor="boarding">Program Boarding</label>
+                            <div className="form-control-wrap">
+                                <Controller
+                                    control={control}
+                                    name="boarding"
+                                    rules={{required: false}}
+                                    render={({field: {value, onChange}}) => (
+                                        <React.Fragment>
+                                            <RSelect
+                                                options={boardingOptions}
+                                                value={value}
+                                                onChange={(selectedOption) => onChange(selectedOption)}
+                                                placeholder="Pilih Aktif"
+                                                isMulti={true}
+                                            />
+                                        </React.Fragment>
+                                    )}
+                                />
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <Button color="primary" type="submit" size="md">
+                                {loading ? <Spinner size="sm"/> : 'SIMPAN'}
+                            </Button>
+                        </div>
                     </Row>
                 </form>
             </ModalBody>

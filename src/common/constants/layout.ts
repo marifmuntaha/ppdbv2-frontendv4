@@ -8,3 +8,5 @@ export const ROLE_NAME = [
 export const COLOR = [
     "success", "danger", "warning", "info", "light", "dark", "primary", "secondary",
 ]
+
+export const ROLE_INSTITUTION = ['2', '3']
