@@ -140,10 +140,10 @@ const Product = () => {
                             </BlockHeadContent>
                         </BlockBetween>
                     </BlockHead>
+                    <PreviewCard>
+                        <ReactDataTable data={products} columns={Column} pagination progressPending={loadData}/>
+                    </PreviewCard>
                 </Block>
-                <PreviewCard>
-                    <ReactDataTable data={products} columns={Column} pagination progressPending={loadData}/>
-                </PreviewCard>
                 <Partial modal={modal} setModal={setModal} product={product} setProduct={setProduct} setLoadData={setLoadData}/>
             </Content>
 

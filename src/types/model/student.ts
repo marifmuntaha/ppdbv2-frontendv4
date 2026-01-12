@@ -209,3 +209,29 @@ export type StudentFileFormType = {
     numberKip: string
     imageKip: any
 }
+
+export type StudentVerificationType = {
+    id?: number
+    userId?: number
+    twins: number
+    twinsName?: string
+    graduate: number
+    student: number
+    teacherSon: number
+    sibling: number
+    siblingInstitution?: number
+    siblingName?: string
+}
+
+export type StudentVerificationFormType = {
+    id?: number
+    userId?: number
+    twins: OptionsType
+    twinsName?: string
+    graduate: OptionsType
+    student: OptionsType
+    teacherSon: OptionsType
+    sibling: OptionsType
+    siblingInstitution?: OptionsType
+    siblingName?: string
+}

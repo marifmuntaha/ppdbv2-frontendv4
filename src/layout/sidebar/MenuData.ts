@@ -25,11 +25,7 @@ const menuAdmin = [
             {
                 text: "Daftar Lembaga",
                 link: "/lembaga/data-lembaga",
-            },
-            {
-                text: "Data Program",
-                link: "/lembaga/data-program",
-            },
+            }
         ],
     },
     {

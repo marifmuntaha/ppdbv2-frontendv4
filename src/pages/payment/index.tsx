@@ -1,14 +1,20 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Head from "@/layout/head";
 import Content from "@/layout/content";
 import {Block, Icon} from "@/components";
 import {Badge, Button, Card} from "reactstrap";
 import {Link} from "react-router-dom";
+import Verification from "@/pages/register/verification";
 
 const Payment = () => {
+    const [modal, setModal] = useState(false)
     const invoices = [
         {id: 1,  merchantRef: '#INV12394',status: 'UNPAID', amount: 3150000}
     ]
+
+    useEffect(() => {
+        setModal(true)
+    }, []);
     return (
         <React.Fragment>
             <Head title="Tagihan"></Head>
@@ -98,6 +104,7 @@ const Payment = () => {
                     </Card>
                 </Block>
             </Content>
+            <Verification modal={modal} setModal={setModal}/>
         </React.Fragment>
     )
 }

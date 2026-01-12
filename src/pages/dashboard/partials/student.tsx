@@ -51,7 +51,7 @@ const Student = () => {
                                     <h6 className="timeline-head">Status Pendaftaran</h6>
                                     <ul className="timeline-list">
                                         <li className="timeline-item">
-                                            <div className={`timeline-status ${student?.personal ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
+                                            <div className={`timeline-status ${student?.personal?.updated_at ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
                                             <div className="timeline-data">
                                                 <h6 className="timeline-title">Input Data Pribadi</h6>
                                                 <div className="timeline-des">
@@ -62,7 +62,7 @@ const Student = () => {
                                             </div>
                                         </li>
                                         <li className="timeline-item">
-                                            <div className={`timeline-status ${student?.parent ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
+                                            <div className={`timeline-status ${student?.parent?.updated_at ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
                                             <div className="timeline-data">
                                                 <h6 className="timeline-title">Input Data Orangtua/Wali</h6>
                                                 <div className="timeline-des">
@@ -73,7 +73,7 @@ const Student = () => {
                                             </div>
                                         </li>
                                         <li className="timeline-item">
-                                            <div className={`timeline-status ${student?.address ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
+                                            <div className={`timeline-status ${student?.address?.updated_at ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
                                             <div className="timeline-data">
                                                 <h6 className="timeline-title">Input Data Tempat Tinggal</h6>
                                                 <div className="timeline-des">
@@ -84,7 +84,7 @@ const Student = () => {
                                             </div>
                                         </li>
                                         <li className="timeline-item">
-                                            <div className={`timeline-status ${student?.program ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
+                                            <div className={`timeline-status ${student?.program?.updated_at ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
                                             <div className="timeline-data">
                                                 <h6 className="timeline-title">Input Program Pilihan</h6>
                                                 <div className="timeline-des">
@@ -95,7 +95,7 @@ const Student = () => {
                                             </div>
                                         </li>
                                         <li className="timeline-item">
-                                            <div className={`timeline-status ${student?.origin ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
+                                            <div className={`timeline-status ${student?.origin?.updated_at ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
                                             <div className="timeline-data">
                                                 <h6 className="timeline-title">Input Sekolah Asal</h6>
                                                 <div className="timeline-des">
@@ -106,7 +106,7 @@ const Student = () => {
                                             </div>
                                         </li>
                                         <li className="timeline-item">
-                                            <div className={`timeline-status ${student?.files ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
+                                            <div className={`timeline-status ${student?.files?.updated_at ? 'bg-success is-outline' : 'bg-danger'} me-2`}></div>
                                             <div className="timeline-data">
                                                 <h6 className="timeline-title">Unggah Berkas</h6>
                                                 <div className="timeline-des">
