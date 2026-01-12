@@ -12,13 +12,13 @@ import {useAuthContext} from "@/common/hooks/useAuthContext";
 
 export const WithSidebar = ({ title } : {title?:string}) => {
     const {user} = useAuthContext()
-    const mainmenu = () => {
+    const mainMenu = () => {
         switch (user?.role) {
-            case "1":
+            case 1:
                 return menuAdmin
-            case "3":
+            case 3:
                 return menuTreasurer
-            case "4":
+            case 4:
                 return menuStudent
             default:
                 return menuDefault
@@ -29,7 +29,7 @@ export const WithSidebar = ({ title } : {title?:string}) => {
             <Head title={!title ? 'Loading' : title} />
             <AppRoot>
                 <AppMain>
-                    <Sidebar menuData={mainmenu()} fixed />
+                    <Sidebar menuData={mainMenu()} fixed />
                     <AppWrap>
                         <Header fixed />
                         <Outlet />

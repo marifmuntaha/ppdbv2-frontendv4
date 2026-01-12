@@ -8,7 +8,7 @@ import {Button, Spinner} from "reactstrap";
 import {get as getFile, store as storeFile, update as updateFile} from "@/common/api/student/file"
 import {useAuthContext} from "@/common/hooks/useAuthContext";
 
-const File = () => {
+const StudentFile = () => {
     const {user} = useAuthContext()
     const [loading, setLoading] = useState(false)
     const [file, setFile] = useState<StudentFileType>();
@@ -253,4 +253,4 @@ const File = () => {
     )
 }
 
-export default File;
+export default StudentFile;

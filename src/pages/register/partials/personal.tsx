@@ -19,17 +19,9 @@ const Personal = () => {
     const onSubmit = (values: StudentPersonalFormType) => {
         setLoading(true)
         const formData: StudentPersonalType = {
+            ...values,
             userId: user?.id,
-            id: values.id,
-            name: values.name,
-            nisn: values.nisn,
-            nik: values.nik,
-            gender: values.gender?.value,
-            birthPlace: values.birthPlace,
             birthDate: moment(values.birthDate).format("YYYY-MM-DD"),
-            phone: values.phone,
-            birthNumber: values.birthNumber,
-            sibling: values.sibling
         }
         if (formData.id === undefined) {
             storePersonal(formData).finally(() => setLoading(false))
@@ -46,7 +38,7 @@ const Personal = () => {
                 setValue('name', result.name)
                 setValue('nisn', result.nisn)
                 setValue('nik', result.nik)
-                setValue('gender', GENDER_OPTIONS.find((item) => item.value === result.gender))
+                setValue('gender', result.gender)
                 setValue('birthPlace', result.birthPlace)
                 setValue('birthDate', moment(result.birthDate, 'YYYY-MM-DD').toDate())
                 setValue('phone', result.phone)
@@ -120,8 +112,8 @@ const Personal = () => {
                                     <RSelect
                                         id="gender"
                                         options={GENDER_OPTIONS}
-                                        value={value}
-                                        onChange={(val) => onChange(val)}
+                                        value={GENDER_OPTIONS.find((item) => item.value === value)}
+                                        onChange={(val) => onChange(val?.value)}
                                         placeholder="Pilih Jenis Kelamin"
                                     />
                                     <input type="hidden" className="form-control" id="gender"/>

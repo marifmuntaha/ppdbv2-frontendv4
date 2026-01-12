@@ -32,6 +32,11 @@ const menuAdmin = [
             },
         ],
     },
+    {
+        icon: "users",
+        text: "Data Pengguna",
+        link: "/data-pengguna",
+    }
 ]
 
 const menuStudent = [
@@ -43,20 +48,18 @@ const menuStudent = [
     {
         icon: "file",
         text: "Pendaftaran",
-        link: "/pendaftaran",
+        subMenu: [
+            {text: 'Data Pribadi', link: '/pendaftaran/data-pribadi'},
+            {text: 'Data Orangtua', link: '/pendaftaran/data-orangtua'},
+            {text: 'Data Tempat Tinggal', link: '/pendaftaran/data-tempat-tinggal'},
+            {text: 'Program Pilihan', link: '/pendaftaran/program-pilihan'},
+            {text: 'Data Sekolah Asal', link: '/pendaftaran/data-sekolah-asal'},
+            {text: 'Data Prestasi', link: '/pendaftaran/data-prestasi'},
+            {text: 'Unggah Berkas', link: '/pendaftaran/unggah-berkas'},
+        ]
     },
     {
-        icon: "upload",
-        text: "Unggah Berkas",
-        link: "/unggah-berkas",
-    },
-    {
-        icon: "checkbox",
-        text: "Validasi",
-        link: "/validasi-pendaftaran",
-    },
-    {
-        icon: "map-pin",
+        icon: "cc-alt",
         text: "Pembayaran",
         link: "/pembayaran",
     },
@@ -80,11 +83,54 @@ const menuTreasurer = [
         link: "/dashboard",
     },
     {
-        icon: "list",
-        text: "Item Pembayaran",
-        link: "/bendahara/item-pembayaran",
+        icon: "archive",
+        text: "Master Data",
+        subMenu: [
+            {
+                text: "Item Pembayaran",
+                link: "/master-data/item-pembayaran",
+            },
+            {
+                text: "Item Potongan",
+                link: "/master-data/item-potongan",
+            }
+        ],
     },
+    {
+        icon: "users",
+        text: "Data Pendaftar",
+        link: "/data-pendaftar"
+    },
+    {
+        icon: "file-docs",
+        text: "Data Tagihan",
+        link: "/data-tagihan",
 
+    },
+    {
+        icon: "cc-alt",
+        text: "Data Pembayaran",
+        link: "/data-pembayaran",
+    },
+    {
+        icon: "file-text",
+        text: "Laporan",
+        subMenu: [
+            {
+                text: "Laporan Tagihan",
+                link: "/laporan/tagihan"
+            },
+            {
+                text: "Laporan Pembayaran",
+                link: "/laporan/pembayaran"
+            }
+        ]
+    },
+    {
+        icon: "setting",
+        text: "Pengaturan",
+        link: "/pengaturan"
+    }
 ];
 
 const menuDefault = [

@@ -12,9 +12,9 @@ const Achievement = () => {
     const [achievements, setAchievements] = useState<StudentAchievementType[]>()
     const [achievement, setAchievement] = useState<StudentAchievementType>({
         id: undefined,
-        level: '',
-        champ: '',
-        type: '',
+        level: undefined,
+        champ: undefined,
+        type: undefined,
         name: '',
         file: ''
     })

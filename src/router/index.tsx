@@ -15,12 +15,19 @@ import Logout from "@/pages/auth/logout";
 import Error404 from "@/pages/error/error404";
 import Boarding from "@/pages/master/boarding";
 import PhoneVerification from "@/pages/auth/phone-verification";
-import StudentRegister from '@/pages/register'
 import Payment from "@/pages/payment";
 import PaymentDetail from "@/pages/payment/detail"
-import File from "@/pages/file";
-import Validation from "@/pages/validation";
-import Product from "@/pages/treasurer/product";
+import Product from "@/pages/master/product";
+import AdminRoute from "@/router/adminRoute";
+import User from "@/pages/user";
+import Discount from "@/pages/master/discount";
+import StudentPersonal from "@/pages/register/personal";
+import StudentParent from "@/pages/register/parent";
+import StudentAddress from "@/pages/register/address";
+import StudentProgram from "@/pages/register/program";
+import StudentOrigin from "@/pages/register/origin";
+import StudentAchievement from "@/pages/register/achievement";
+import StudentFile from "@/pages/register/file";
 
 interface ScrollToTopProps {
     children: ReactNode;
@@ -44,16 +51,22 @@ const Router: React.FC = () => {
                         <Route element={<WithSidebar/>}>
                             <Route element={<ProtectedRoute/>}>
                                 <Route path='/dashboard' element={<Dashboard/>}/>
+                                <Route element={<AdminRoute/>}>
+                                    <Route path="/data-pengguna" element={<User/>}/>
+                                </Route>
                                 <Route path='/master-data/tahun-pelajaran' element={<Year/>}/>
                                 <Route path='/master-data/program-boarding' element={<Boarding/>}/>
+                                <Route path="/master-data/item-pembayaran" element={<Product/>}/>
+                                <Route path="/master-data/item-potongan" element={<Discount/>}/>
                                 <Route path='/lembaga/:id/detail' element={<InstitutionDetails/>}/>
                                 <Route path='/lembaga/data-lembaga' element={<InstitutionList/>}/>
-                                <Route path="/pendaftaran" element={<StudentRegister/>}/>
-                                <Route path="/unggah-berkas" element={<File/>}/>
-                                <Route path="/validasi-pendaftaran" element={<Validation/>}/>
-
-                                //Route bendahara
-                                <Route path="/bendahara/item-pembayaran" element={<Product/>}/>
+                                <Route path="/pendaftaran/data-pribadi" element={<StudentPersonal/>}/>
+                                <Route path="/pendaftaran/data-orangtua" element={<StudentParent/>}/>
+                                <Route path="/pendaftaran/data-tempat-tinggal" element={<StudentAddress/>}/>
+                                <Route path="/pendaftaran/program-pilihan" element={<StudentProgram/>}/>
+                                <Route path="/pendaftaran/data-sekolah-asal" element={<StudentOrigin/>}/>
+                                <Route path="/pendaftaran/data-prestasi" element={<StudentAchievement/>}/>
+                                <Route path="/pendaftaran/unggah-berkas" element={<StudentFile/>}/>
                                 <Route path="/pembayaran" element={<Payment/>}/>
                                 <Route path="/pembayaran/:id/lihat" element={<PaymentDetail/>}/>
                             </Route>
@@ -67,6 +80,7 @@ const Router: React.FC = () => {
                             <Route element={<ProtectedRoute/>}>
                                 <Route path="/auth/keluar" element={<Logout/>}/>
                             </Route>
+                            <Route path="/error/403" element={<Error404/>}/>
                             <Route path="*" element={<Error404/>}/>
                         </Route>
                     </Route>

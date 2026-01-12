@@ -14,39 +14,42 @@ import {
 } from "@/components";
 import {useYearContext} from "@/common/hooks/useYearContext";
 import Partial from "./partial";
-import type {ColumnType, ProductType} from "@/types";
-import {get as getProduct, destroy as destroyProduct} from "@/common/api/product";
+import type {ColumnType, DiscountType} from "@/types";
+import {get as getDiscount, destroy as destroyDiscount} from "@/common/api/master/discount";
 import {useInstitutionContext} from "@/common/hooks/useInstitutionContext";
 import {ButtonGroup, Spinner} from "reactstrap";
-import {fetchProductOption, formatIDR} from "@/helpers";
+import {fetchUnit, formatIDR} from "@/helpers";
 
-const Product = () => {
+const Discount = () => {
     const year = useYearContext()
     const institution = useInstitutionContext()
     const [sm, updateSm] = useState(false)
     const [modal, setModal] = useState(false)
     const [loading, setLoading] = useState<boolean|string|number|undefined>(false)
     const [loadData, setLoadData] = useState(true)
-    const [products, setProducts] = useState<ProductType[]>([])
-    const [product, setProduct] = useState<ProductType>({
+    const [discounts, setDiscounts] = useState<DiscountType[]>([])
+    const [discount, setDiscount] = useState<DiscountType>({
         id: undefined,
         name: '',
-        surname: '',
+        description: '',
         price: '',
-        gender: '',
-        program: '',
-        boarding: ''
+        unit: 0,
     })
 
-    const Column: ColumnType<ProductType>[] = [
+    const Column: ColumnType<DiscountType>[] = [
+        {
+            name: "Item",
+            selector: (row) => row.product?.name,
+            sortable: false,
+        },
         {
             name: "Nama",
             selector: (row) => row.name,
             sortable: false,
         },
         {
-            name: "Alias",
-            selector: (row) => row.surname,
+            name: "Diskripsi",
+            selector: (row) => row.description,
             sortable: false,
         },
         {
@@ -55,22 +58,10 @@ const Product = () => {
             sortable: false,
         },
         {
-            name: "JK",
-            selector: (row) => row.gender,
+            name: "Satuan",
+            selector: (row) => row.unit,
             sortable: false,
-            cell: (row) => fetchProductOption(row.gender)
-        },
-        {
-            name: "Program",
-            selector: (row) => row.program,
-            sortable: false,
-            cell: (row) => fetchProductOption(row.program)
-        },
-        {
-            name: "Program",
-            selector: (row) => row.boarding,
-            sortable: false,
-            cell: (row) => fetchProductOption(row.boarding)
+            cell: (row) => fetchUnit(row.unit)
         },
         {
             name: "Aksi",
@@ -80,14 +71,14 @@ const Product = () => {
             cell: (row) => (
                 <ButtonGroup size="sm">
                     <Button outline color="warning" onClick={() => {
-                        setProduct(row);
+                        setDiscount(row);
                         setModal(true);
                     }}>
                         <Icon name="pen"/>
                     </Button>
                     <Button outline color="danger" onClick={async () => {
                         setLoading(row?.id);
-                        await destroyProduct(row?.id)
+                        await destroyDiscount(row?.id)
                             .then(() => setLoadData(true))
                             .finally(() => setLoading(false));
                     }}>
@@ -99,8 +90,8 @@ const Product = () => {
     ];
 
     useEffect(() => {
-        if (loadData) getProduct<ProductType>({yearId: year?.id, institutionId: institution?.id})
-            .then((resp) => setProducts(resp))
+        if (loadData) getDiscount<DiscountType>({yearId: year?.id, institutionId: institution?.id})
+            .then((resp) => setDiscounts(resp))
             .finally(() => setLoadData(false));
     }, [loadData])
 
@@ -112,9 +103,9 @@ const Product = () => {
                     <BlockHead>
                         <BlockBetween>
                             <BlockHeadContent>
-                                <BlockTitle tag="h5">Item Pembayaran</BlockTitle>
+                                <BlockTitle tag="h5">Item Potongan</BlockTitle>
                                 <p>
-                                    Item pembayaran tahun ajaran {year?.name}
+                                    Item Potongan tahun ajaran {year?.name}
                                 </p>
                             </BlockHeadContent>
                             <BlockHeadContent>
@@ -142,13 +133,12 @@ const Product = () => {
                     </BlockHead>
                 </Block>
                 <PreviewCard>
-                    <ReactDataTable data={products} columns={Column} pagination progressPending={loadData}/>
+                    <ReactDataTable data={discounts} columns={Column} pagination progressPending={loadData}/>
                 </PreviewCard>
-                <Partial modal={modal} setModal={setModal} product={product} setProduct={setProduct} setLoadData={setLoadData}/>
+                <Partial modal={modal} setModal={setModal} discount={discount} setDiscount={setDiscount} setLoadData={setLoadData}/>
             </Content>
-
         </React.Fragment>
     )
 }
 
-export default Product;
+export default Discount;

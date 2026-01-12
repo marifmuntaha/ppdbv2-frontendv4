@@ -8,7 +8,7 @@ import type {OptionsType} from "@/types";
 const ParentFather = ({methods}: { methods: any }) => {
     const {register, control, formState: {errors}} = methods;
     const fatherStatus: OptionsType = useWatch({control, name: 'fatherStatus'})
-    const fatherRules: string|boolean = fatherStatus?.value === '1' ? 'Kolom tidak boleh kosong.' : false
+    const fatherRules: string|boolean = fatherStatus?.value === 1 ? 'Kolom tidak boleh kosong.' : false
     return (
         <React.Fragment>
             <Row className="gy-0">

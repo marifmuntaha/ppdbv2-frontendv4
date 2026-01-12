@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button, Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
 import {Controller, useForm, useWatch} from "react-hook-form";
 import {Icon, Row, RSelect} from "@/components";
-import {store as storeProduct, update as updateProduct} from "@/common/api/product";
+import {store as storeProduct, update as updateProduct} from "@/common/api/master/product";
 import {get as getProgram} from "@/common/api/institution/program";
 import {get as getBoarding} from "@/common/api/master/boarding";
 import type {OptionsType, ProductFormType, ProductType} from "@/types";
@@ -27,7 +27,7 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
     const [boardingOptions, setBoardingOptions] = useState<OptionsType[]>()
     const {control, reset, handleSubmit, register, formState: {errors}, setValue} = useForm<ProductFormType>();
     const genderOptions: OptionsType[] = [
-        {value: '0', label: 'Semua'},
+        {value: 0, label: 'Semua'},
         ...GENDER_OPTIONS
     ]
     const onSubmit = (values: ProductFormType) => {
@@ -56,9 +56,11 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
     }
     const onUpdate = async (value: ProductType) => {
         setLoading(true)
-        await updateProduct(value).then(() => {
-            toggle()
-            setLoadData(true)
+        await updateProduct(value).then((resp) => {
+            if (resp.status === 'success') {
+                toggle()
+                setLoadData(true)
+            }
         }).finally(() => setLoading(false));
     }
     const handleReset = () => {
@@ -83,30 +85,25 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
         setValue('id', product.id);
         setValue('name', product.name);
         setValue('surname', product.surname)
-        setValue('price', product.price)
+        setValue('price', numberFormat(product.price))
         setValue('gender', product.gender && JSON.parse(product.gender))
+        setValue('program', product.program && JSON.parse(product.program))
+        setValue('boarding', product.boarding && JSON.parse(product.boarding))
+    }, [product, setValue]);
+
+    useEffect(() => {
         getProgram<OptionsType>({yearId: year?.id, institutionId: institution?.id, type: 'select'})
             .then((resp) => {
                 if (resp.length > 0) {
-                    setProgramOptions([{value: '0', label: 'Semua'}, ...resp]);
-                    const program = product.program !== '' ? JSON.parse(product.program) : []
-                    const programSelected: OptionsType[] = program.map((item: string) => {
-                        return resp.find((selected) => selected.value === item)
-                    })
-                    setValue('program', programSelected)
+                    setProgramOptions([{value: 0, label: 'Semua'}, ...resp]);
                 }
             })
         getBoarding<OptionsType>({type: 'select'}).then((resp) => {
             if (resp.length > 0) {
-                setBoardingOptions([{value: '0', label: 'Semua'}, ...resp]);
-                const boarding = product.boarding !== '' ? JSON.parse(product.boarding) : []
-                const boardingSelected: OptionsType[] = boarding.map((item: string) => {
-                    return resp.find((selected) => item === selected.value)
-                })
-                setValue('boarding', boardingSelected)
+                setBoardingOptions([{value: 0, label: 'Semua'}, ...resp]);
             }
         })
-    }, [product, setValue]);
+    }, []);
 
     return (
         <Modal isOpen={modal} toggle={toggle}>

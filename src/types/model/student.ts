@@ -6,7 +6,7 @@ export type StudentPersonalType = {
     name: string
     nisn?: string
     nik: string
-    gender: string|undefined
+    gender: number
     birthPlace: string
     birthDate: string
     phone: string
@@ -14,6 +14,8 @@ export type StudentPersonalType = {
     sibling: string
     createdBy?: number
     updatedBy?: number
+    created_at?: string
+    updated_at?: string
 }
 
 export type StudentPersonalFormType = {
@@ -21,7 +23,7 @@ export type StudentPersonalFormType = {
     name: string
     nisn?: string
     nik: string
-    gender: OptionsType|undefined
+    gender: number
     birthPlace: string
     birthDate: Date
     phone: string
@@ -34,30 +36,34 @@ export type StudentParentType = {
     userId?: number
     numberKk: string
     headFamily: string
-    fatherStatus: string|undefined
+    fatherStatus: number
     fatherName: string
     fatherNik: string
     fatherBirthPlace: string
     fatherBirthDate: string
-    fatherStudy: string|undefined
-    fatherJob: string|undefined
+    fatherStudy: number
+    fatherJob: number
     fatherPhone: string
-    motherStatus: string|undefined
+    motherStatus: number
     motherName: string
     motherNik: string
     motherBirthPlace: string
     motherBirthDate: string
-    motherStudy: string|undefined
-    motherJob: string|undefined
+    motherStudy: number
+    motherJob: number
     motherPhone: string
-    guardStatus: string|undefined
+    guardStatus: number
     guardName: string
     guardNik: string
     guardBirthPlace: string
     guardBirthDate: string
-    guardStudy: string|undefined
-    guardJob: string|undefined
+    guardStudy: number
+    guardJob: number
     guardPhone: string
+    createdBy?: number
+    updatedBy?: number
+    created_at?: string
+    updated_at?: string
 }
 
 
@@ -65,29 +71,29 @@ export type StudentParentFormType = {
     id?: number
     numberKk: string
     headFamily: string
-    fatherStatus: OptionsType|undefined
+    fatherStatus?: OptionsType
     fatherName: string
     fatherNik: string
     fatherBirthPlace: string
     fatherBirthDate: Date
-    fatherStudy: OptionsType|undefined
-    fatherJob: OptionsType|undefined
+    fatherStudy?: OptionsType
+    fatherJob?: OptionsType
     fatherPhone: string
-    motherStatus: OptionsType|undefined
+    motherStatus?: OptionsType
     motherName: string
     motherNik: string
     motherBirthPlace: string
     motherBirthDate: Date
-    motherStudy: OptionsType|undefined
-    motherJob: OptionsType|undefined
+    motherStudy?: OptionsType
+    motherJob?: OptionsType
     motherPhone: string
-    guardStatus: OptionsType|undefined
+    guardStatus?: OptionsType
     guardName: string
     guardNik: string
     guardBirthPlace: string
     guardBirthDate: Date
-    guardStudy: OptionsType|undefined
-    guardJob: OptionsType|undefined
+    guardStudy?: OptionsType
+    guardJob?: OptionsType
     guardPhone: string
 }
 
@@ -102,8 +108,10 @@ export type StudentAddressType = {
     rt: string
     rw: string
     postal: string
-    createdBy?: string
-    updatedBy?: string
+    createdBy?: number
+    updatedBy?: number
+    created_at?: string
+    updated_at?: string
 }
 
 export type StudentAddressFormType = {
@@ -116,16 +124,20 @@ export type StudentAddressFormType = {
     rt: string
     rw: string
     postal: string
+    createdBy?: number
+    updatedBy?: number
+    created_at?: string
+    updated_at?: string
 }
 
 export type StudentProgramType = {
     id?: number
     userId?: number
     yearId?: number
-    institutionId?: string
+    institutionId?: number
     periodId?: number
-    programId?: string
-    boardingId?: string
+    programId?: number
+    boardingId?: number
     institution?: InstitutionType
     period?: InstitutionPeriodType
     program?: InstitutionProgramType
@@ -142,22 +154,26 @@ export type StudentOriginType = {
     name: string
     npsn: string
     address: string
-    createdBy?: string
-    updatedBy?: string
+    createdBy?: number
+    updatedBy?: number
+    created_at?: string
+    updated_at?: string
 }
 
 export type StudentAchievementType = {
     id?: number
     yearId?: number
     userId?: number
-    level: string
-    champ: string
-    type: string
+    level?: number
+    champ?: number
+    type?: number
     name: string
     file: string
     image?: any
-    createdBy?: string
-    updatedBy?: string
+    createdBy?: number
+    updatedBy?: number
+    created_at?: string
+    updated_at?: string
 }
 
 export type StudentFileType = {
@@ -173,8 +189,10 @@ export type StudentFileType = {
     fileSkl: string
     numberKip: string
     fileKip: string
-    createdBy?: string
-    updatedBy?: string
+    createdBy?: number
+    updatedBy?: number
+    created_at?: string
+    updated_at?: string
 }
 
 export type StudentFileFormType = {

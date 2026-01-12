@@ -10,7 +10,7 @@ const ParentGuard = ({methods}: { methods: any }) => {
     const guardStatus: OptionsType = useWatch({control, name: 'guardStatus'})
 
     useEffect(() => {
-        if (guardStatus?.value === '1') {
+        if (guardStatus?.value === 1) {
             setValue("guardName", getValues('fatherName'))
             setValue("guardNik", getValues('fatherNik'))
             setValue("guardBirthPlace", getValues('fatherBirthPlace'))
@@ -18,7 +18,7 @@ const ParentGuard = ({methods}: { methods: any }) => {
             setValue("guardStudy", getValues('fatherStudy'))
             setValue("guardJob", getValues('fatherJob'))
             setValue("guardPhone", getValues('fatherPhone'))
-        } else if (guardStatus?.value === '2') {
+        } else if (guardStatus?.value === 2) {
             setValue("guardName", getValues('motherName'))
             setValue("guardNik", getValues('motherNik'))
             setValue("guardBirthPlace", getValues('motherBirthPlace'))
@@ -70,7 +70,7 @@ const ParentGuard = ({methods}: { methods: any }) => {
                             type="text"
                             className="form-control"
                             placeholder="Ex. Muhammad Arif"
-                            disabled={guardStatus?.value !== '3'}
+                            disabled={guardStatus?.value !== 3}
                             {...register('guardName', {
                                 required: 'Kolom tidak boleh kosong',
                             })}
@@ -85,7 +85,7 @@ const ParentGuard = ({methods}: { methods: any }) => {
                             type="text"
                             className="form-control"
                             placeholder="Ex. 1234512345123456"
-                            disabled={guardStatus?.value !== '3'}
+                            disabled={guardStatus?.value !== 3}
                             {...register('guardNik', {
                                 required: 'Kolom tidak boleh Kosong',
                             })}
@@ -100,7 +100,7 @@ const ParentGuard = ({methods}: { methods: any }) => {
                             type="text"
                             className="form-control"
                             placeholder="Ex. Jepara"
-                            disabled={guardStatus?.value !== '3'}
+                            disabled={guardStatus?.value !== 3}
                             {...register('guardBirthPlace', {
                                 required: 'Kolom tidak boleh kosong',
                             })}
@@ -124,7 +124,7 @@ const ParentGuard = ({methods}: { methods: any }) => {
                                         dateFormat={"dd/MM/yyyy"}
                                         className="form-control date-picker"
                                         placeholderText="Pilih Tanggal Lahir"
-                                        disabled={guardStatus?.value !== '3'}
+                                        disabled={guardStatus?.value !== 3}
                                     />
                                     <input type="hidden" className="form-control" id="guardBirthDate"/>
                                     {errors.guardBirthDate && <span className="invalid">{errors.guardBirthDate.message}</span>}
@@ -148,7 +148,7 @@ const ParentGuard = ({methods}: { methods: any }) => {
                                         value={value}
                                         onChange={(val) => onChange(val)}
                                         placeholder="Pilih Pendidikan Wali"
-                                        isDisabled={guardStatus?.value !== '3'}
+                                        isDisabled={guardStatus?.value !== 3}
                                     />
                                     <input type="hidden" className="form-control" id="guardStudy"/>
                                     {errors.guardStudy && <span className="invalid">{errors.guardStudy.message}.</span>}
@@ -172,7 +172,7 @@ const ParentGuard = ({methods}: { methods: any }) => {
                                         value={value}
                                         onChange={(val) => onChange(val)}
                                         placeholder="Pilih Pekerjaan Wali"
-                                        isDisabled={guardStatus?.value !== '3'}
+                                        isDisabled={guardStatus?.value !== 3}
                                     />
                                     <input type="hidden" className="form-control" id="guardJob"/>
                                     {errors.guardJob && <span className="invalid">{errors.guardJob.message}.</span>}
@@ -188,7 +188,7 @@ const ParentGuard = ({methods}: { methods: any }) => {
                             type="text"
                             className="form-control"
                             placeholder="Ex. Jepara"
-                            disabled={guardStatus?.value !== '3'}
+                            disabled={guardStatus?.value !== 3}
                             {...register('guardPhone', {
                                 required: 'Kolom tidak boleh kosong',
                             })}

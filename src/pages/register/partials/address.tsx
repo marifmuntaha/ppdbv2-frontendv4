@@ -17,16 +17,12 @@ const Address = () => {
     const onSubmit = (values: StudentAddressFormType) => {
         setLoading(true)
         const formData: StudentAddressType = {
+            ...values,
             userId: user?.id,
-            id: values.id,
             province: JSON.stringify(values.province),
             city: JSON.stringify(values.city),
             district: JSON.stringify(values.district),
             village: JSON.stringify(values.village),
-            street: values.street,
-            rt: values.rt,
-            rw: values.rw,
-            postal: values.postal,
         }
         if (formData.id === undefined) {
             storeAddress(formData).finally(() => setLoading(false))

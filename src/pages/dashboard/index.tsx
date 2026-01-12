@@ -6,11 +6,11 @@ import Student from "@/pages/dashboard/partials/student";
 const Dashboard = () => {
     const {user} = useAuthContext()
     switch (user?.role) {
-        case '1':
+        case 1:
             return <Administrator />
-        case '3':
+        case 3:
             return <Treasurer />
-        case '4':
+        case 4:
             return <Student />
         default:
             return "Halaman Dashboard"

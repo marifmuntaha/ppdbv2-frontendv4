@@ -24,7 +24,6 @@ export const InstitutionProvider = ({children} : {children: ReactNode}) => {
             }
         }
         fetchYear()
-        console.log(user)
     }, [loading]);
 
     if (loading) return <Loading/>

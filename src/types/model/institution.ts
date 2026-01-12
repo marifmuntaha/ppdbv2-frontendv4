@@ -55,9 +55,9 @@ export type InstitutionActivityFormType = {
 }
 
 export type InstitutionProgramType = {
-    id?: number|undefined;
-    yearId: number|undefined;
-    institutionId: number|string|undefined;
+    id?: number;
+    yearId?: number;
+    institutionId?: number;
     name: string,
     alias: string,
     description: string,
@@ -67,9 +67,9 @@ export type InstitutionProgramType = {
 }
 
 export type InstitutionProgramFormType = {
-    id?: number|undefined;
-    yearId: number|undefined;
-    institutionId: number|string|undefined;
+    id?: number;
+    yearId?: number;
+    institutionId?: number;
     name: string,
     alias: string,
     description: string,

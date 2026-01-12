@@ -35,8 +35,8 @@ const Program = () => {
             updateProgram(formData).finally(() => setLoading(false))
         }
     }
-    const institutionSelected = useWatch({control, name: 'institutionId'})
-    const programSelected = useWatch({control, name: 'programId'})
+    const institutionSelected = useWatch({control, name: 'institutionId'}) ?? ''
+    const programSelected = useWatch({control, name: 'programId'}) ?? ''
 
     useEffect(() => {
         getInstitution<OptionsType>({type: 'select'}).then((resp) => setInstitutionOptions(resp))

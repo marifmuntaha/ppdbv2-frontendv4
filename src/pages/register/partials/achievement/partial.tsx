@@ -59,9 +59,9 @@ const Partial = ({modal, setModal, achievement, setAchievement, setLoadData}: Pa
     const handleReset = () => {
         setAchievement({
             id: undefined,
-            level: '',
-            champ: '',
-            type: '',
+            level: undefined,
+            champ: undefined,
+            type: undefined,
             name: '',
             file: '',
             image: undefined,
