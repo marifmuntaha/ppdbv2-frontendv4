@@ -4,7 +4,7 @@ import type {
     StudentOriginType,
     StudentParentType,
     StudentPersonalType,
-    StudentProgramType
+    StudentProgramType, StudentVerificationType
 } from "@/types";
 
 export type DashboardStudentType = {
@@ -15,4 +15,15 @@ export type DashboardStudentType = {
     origin: Partial<StudentOriginType>
     achievement?: Partial<StudentAchievementType>
     files: Partial<StudentFileType>
+}
+
+export type StudentTreasurerType = {
+    name: string,
+    birthPlace: string,
+    birthDate: string,
+    guardName: string,
+    address: string,
+    program: string,
+    boarding: string,
+    verification: Partial<StudentVerificationType>
 }

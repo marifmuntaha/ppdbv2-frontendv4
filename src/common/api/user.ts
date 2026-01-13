@@ -7,7 +7,6 @@ async function get(params: Record<string, any> = {}, notification: boolean = fal
     const baseUrl = '/user'
     const result = await api.get<UserType[]>(baseUrl, params, notification)
         .then((value: ApiResponseInterface<UserType[]> ) => value.result);
-    console.log(result);
     return result !== undefined ? result : [];
 }
 
@@ -17,9 +16,9 @@ async function store(params: Record<string, any> = {}) {
         .then((resp) => resp.result)
 }
 
-async function update(params: Record<string, any> = {}) {
+async function update(params: Record<string, any> = {}, notification: boolean = true) {
     const baseUrl = `/user/${params.id}`
-    return await api.update<UserType>(baseUrl, params, true).then((resp) => resp);
+    return await api.update<UserType>(baseUrl, params, notification).then((resp) => resp);
 }
 
 async function destroy(id: number|undefined) {

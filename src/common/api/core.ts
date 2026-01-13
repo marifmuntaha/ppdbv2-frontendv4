@@ -53,9 +53,9 @@ class apiCore {
     };
 
     async update<T>(url: string, data: any, notify: boolean): Promise<ApiResponseInterface<T>> {
-        const response = await axios.put(url, data)
+        const response: AxiosResponse | AxiosError = await axios.put(url, data)
             .catch((error: AxiosError) => error);
-        return this.handleResponse(response, notify);
+        return this.handleResponse<T>(response, notify);
     };
 
     delete = async (url: string, message: boolean): Promise<any> => {

@@ -1,7 +1,7 @@
 import {COLOR} from "@/common/constants";
 
-const getRandomColor = () => {
-    return COLOR[Math.floor(Math.random() * COLOR.length)];
+const getRandomColor = (id: number) => {
+    return COLOR[id];
 }
 
 export { getRandomColor };

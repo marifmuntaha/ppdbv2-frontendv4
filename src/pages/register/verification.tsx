@@ -1,5 +1,5 @@
 import {Button, Modal, ModalBody, ModalHeader, Spinner} from "reactstrap";
-import {Col, Icon, Row, RSelect} from "@/components";
+import {Col, Row, RSelect} from "@/components";
 import {Controller, useForm, useWatch} from "react-hook-form";
 import React, {useEffect, useState} from "react";
 import type {
@@ -11,6 +11,7 @@ import type {
 } from "@/types";
 import {get as getProgram} from "@/common/api/student/program";
 import {get as getInstitution} from "@/common/api/institution";
+import {store as storeVerification} from "@/common/api/student/verivication";
 import {useAuthContext} from "@/common/hooks/useAuthContext";
 
 type VerificationPropsType = {
@@ -27,10 +28,8 @@ const Verification = ({modal, setModal}: VerificationPropsType) => {
         {value: 1, label: 'Ya'},
         {value: 2, label: 'Tidak'},
     ]
-    const toggle = () => {
-        setModal(false)
-    }
     const onSubmit = (values: StudentVerificationFormType) => {
+        setLoading(true)
         const formData: StudentVerificationType = {
             ...values,
             userId: user?.id,
@@ -41,10 +40,11 @@ const Verification = ({modal, setModal}: VerificationPropsType) => {
             sibling: values.sibling.value,
             siblingInstitution: values.siblingInstitution?.value
         }
-        console.log(formData)
+        storeVerification(formData).then((resp) => {
+            if (resp) setModal(false)
+        }).finally(() => setLoading(false))
     }
     const {handleSubmit, register, formState: {errors}, control} = useForm<StudentVerificationFormType>();
-
     const twinsSelected = useWatch({control, name: 'twins'})
     const siblingSelected: OptionsType = useWatch({control, name: 'sibling'})
     const siblingRules = siblingSelected?.value === 1 ? {required: 'Kolom tidak boleh kosong'} : {required: false}
@@ -69,14 +69,8 @@ const Verification = ({modal, setModal}: VerificationPropsType) => {
     }, []);
 
     return (
-        <Modal isOpen={modal} toggle={toggle}>
-            <ModalHeader toggle={toggle} close={
-                <button className="close" onClick={toggle}>
-                    <Icon name="cross"/>
-                </button>
-            }>
-                Verifikasi Pendaftaran
-            </ModalHeader>
+        <Modal isOpen={modal}>
+            <ModalHeader>Verifikasi Pendaftaran</ModalHeader>
             <ModalBody>
                 <form className="is-alter" onSubmit={handleSubmit(onSubmit)}>
                     <Row className="g-3 align-center mb-2">

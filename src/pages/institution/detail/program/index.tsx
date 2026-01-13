@@ -27,7 +27,7 @@ const Program: React.FC = () => {
     const [program, setProgram] = useState<InstitutionProgramType>({
         id: undefined,
         yearId: year?.id,
-        institutionId: id,
+        institutionId: id as unknown as number,
         name: '',
         alias: '',
         description: '',
@@ -38,16 +38,10 @@ const Program: React.FC = () => {
             name: "Nama Program",
             selector: (row) => row.name,
             sortable: false,
-            width: "300px",
         },
         {
             name: "Singkatan",
             selector: (row) => row.alias,
-            sortable: false,
-        },
-        {
-            name: "Diskripsi",
-            selector: (row) => row.description,
             sortable: false,
         },
         {
@@ -58,7 +52,7 @@ const Program: React.FC = () => {
                 const boarding: OptionsType[] = row?.boarding !== '' ? JSON.parse(row.boarding) : []
                 return <div>
                     {boarding.map((item) => (
-                        <Badge key={item.value} pill color={getRandomColor()}>{item.label}</Badge>
+                        <Badge key={item.value} pill color={getRandomColor(item.value)} className="me-1">{item.label}</Badge>
                     ))}
                 </div>
             }
@@ -90,7 +84,7 @@ const Program: React.FC = () => {
     ];
 
     useEffect(() => {
-        getProgram({list: 'table', yearId: year?.id, institutionId: id}).then((resp) => {
+        getProgram<InstitutionProgramType>({list: 'table', yearId: year?.id, institutionId: id}).then((resp) => {
             if (resp) setPrograms(resp)
         }).finally(() => setLoadData(false))
     }, [id, year, loadData]);

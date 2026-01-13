@@ -5,15 +5,22 @@ import {Block, Icon} from "@/components";
 import {Badge, Button, Card} from "reactstrap";
 import {Link} from "react-router-dom";
 import Verification from "@/pages/register/verification";
+import {get as getVerification} from "@/common/api/student/verivication";
+import {useAuthContext} from "@/common/hooks/useAuthContext";
 
 const Payment = () => {
+    const {user} = useAuthContext()
     const [modal, setModal] = useState(false)
     const invoices = [
         {id: 1,  merchantRef: '#INV12394',status: 'UNPAID', amount: 3150000}
     ]
 
     useEffect(() => {
-        setModal(true)
+        getVerification({userId: user?.id}).then((resp) => {
+            if (resp.length === 0) {
+                setModal(true)
+            }
+        })
     }, []);
     return (
         <React.Fragment>

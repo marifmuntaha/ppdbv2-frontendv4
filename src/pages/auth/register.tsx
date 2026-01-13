@@ -15,22 +15,28 @@ import {
     PreviewCard,
 } from "@/components";
 import {Spinner} from "reactstrap";
-import {useForm} from "react-hook-form";
+import {useForm, useWatch} from "react-hook-form";
 import {Link} from "react-router-dom";
 import type {RegisterFormType} from "@/types";
 import {register as registerUser} from "@/common/api/auth"
+import {useAuthContext} from "@/common/hooks/useAuthContext";
 
 const Register = () => {
+    const {setUser} = useAuthContext();
     const [passState, setPassState] = useState(false);
     const [confmState, setConfmState] = useState(false);
     const [loading, setLoading] = useState(false);
-    const {register, handleSubmit, watch, formState: {errors}} = useForm<RegisterFormType>();
+    const {register, handleSubmit, formState: {errors}, control} = useForm<RegisterFormType>();
     const navigate = useNavigate();
+    const password = useWatch({control, name: 'password'})
     const onSubmit = async (formData: RegisterFormType) => {
         setLoading(true);
         formData.role = 4
         await registerUser(formData).then((resp) => {
-            if (resp !== undefined) navigate('/auth/verifikasi')
+            if (resp !== undefined) {
+                setUser(resp.user)
+                navigate('/auth/verifikasi')
+            }
         }).finally(() => setLoading(false));
     };
     return (
@@ -155,7 +161,7 @@ const Register = () => {
                                     id="password_confirmation"
                                     {...register('password_confirmation', {
                                         required: "Kolom ini wajib diisi",
-                                        validate: value => value === watch('password')|| 'Kata sandi tidak cocok'
+                                        validate: value => value === password || 'Kata sandi tidak cocok'
                                     })}
                                     placeholder="Masukkan kata sandi Anda"
                                     className={`form-control-lg form-control ${passState ? "is-hidden" : "is-shown"}`}/>

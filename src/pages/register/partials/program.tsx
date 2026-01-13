@@ -9,6 +9,7 @@ import {get as getInstitution} from "@/common/api/institution";
 import {get as getInstitutionPrograms} from "@/common/api/institution/program";
 import {get as getPeriod} from "@/common/api/institution/period"
 import {get as getProgram, store as storeProgram, update as updateProgram} from "@/common/api/student/program";
+import {update as updateUser} from "@/common/api/user";
 import moment from "moment/moment";
 
 const Program = () => {
@@ -30,9 +31,13 @@ const Program = () => {
             periodId: period?.id,
         }
         if (formData.id === undefined) {
-            storeProgram(formData).finally(() => setLoading(false))
+            storeProgram(formData).then(() => {
+                updateUser({id: user?.id, institutionId: values.institutionId})
+            }).finally(() => setLoading(false))
         } else {
-            updateProgram(formData).finally(() => setLoading(false))
+            updateProgram(formData).then(() => {
+                updateUser({id: user?.id, institutionId: values.institutionId}, false)
+            }).finally(() => setLoading(false))
         }
     }
     const institutionSelected = useWatch({control, name: 'institutionId'}) ?? ''
