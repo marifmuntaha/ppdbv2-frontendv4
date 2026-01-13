@@ -1,4 +1,5 @@
 import type {
+    InvoiceType,
     StudentAchievementType,
     StudentAddressType, StudentFileType,
     StudentOriginType,
@@ -7,7 +8,7 @@ import type {
     StudentProgramType, StudentVerificationType
 } from "@/types";
 
-export type DashboardStudentType = {
+export type StudentDashboardType = {
     personal: Partial<StudentPersonalType>
     parent: Partial<StudentParentType>
     address: Partial<StudentAddressType>
@@ -26,4 +27,13 @@ export type StudentTreasurerType = {
     program: string,
     boarding: string,
     verification: Partial<StudentVerificationType>
+}
+
+export type StudentInvoiceType = {
+    userId?: number
+    name: string,
+    guardName: string,
+    address: string,
+    invoice?: InvoiceType,
+    verification?: Partial<StudentVerificationType>
 }

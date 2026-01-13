@@ -55,30 +55,6 @@ const Student = () => {
             selector: (row) => row.boarding,
             sortable: false,
         },
-        // {
-        //     name: "Aksi",
-        //     selector: (row) => row?.id,
-        //     sortable: false,
-        //     width: "150px",
-        //     cell: (row) => (
-        //         <ButtonGroup size="sm">
-        //             <Button outline color="warning" onClick={() => {
-        //                 setYear(row);
-        //                 setModal(true);
-        //             }}>
-        //                 <Icon name="pen"/>
-        //             </Button>
-        //             <Button outline color="danger" onClick={async () => {
-        //                 setLoading(row?.id);
-        //                 await destroyYear(row?.id)
-        //                     .then(() => setLoadData(true))
-        //                     .finally(() => setLoading(false));
-        //             }}>
-        //                 {loading === row.id ? <Spinner size="sm"/> : <Icon name="trash"/>}
-        //             </Button>
-        //         </ButtonGroup>
-        //     ),
-        // },
     ];
 
     useEffect(() => {

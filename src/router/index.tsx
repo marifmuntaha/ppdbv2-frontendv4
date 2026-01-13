@@ -29,6 +29,7 @@ import StudentOrigin from "@/pages/register/origin";
 import StudentAchievement from "@/pages/register/achievement";
 import StudentFile from "@/pages/register/file";
 import Student from "@/pages/student";
+import Invoice from "@/pages/invoice";
 
 interface ScrollToTopProps {
     children: ReactNode;
@@ -69,6 +70,7 @@ const Router: React.FC = () => {
                                 <Route path="/pendaftaran/data-prestasi" element={<StudentAchievement/>}/>
                                 <Route path="/pendaftaran/unggah-berkas" element={<StudentFile/>}/>
                                 <Route path="/data-pendaftar" element={<Student/>}/>
+                                <Route path="/data-tagihan" element={<Invoice/>}/>
                                 <Route path="/pembayaran" element={<Payment/>}/>
                                 <Route path="/pembayaran/:id/lihat" element={<PaymentDetail/>}/>
                             </Route>

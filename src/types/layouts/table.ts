@@ -7,3 +7,9 @@ export interface ColumnType<T> {
     cell?: (row: T) => JSX.Element;
     width?: string;
 }
+
+export type ModalInvoiceType = {
+    generate: boolean;
+    edit: boolean;
+    show: boolean;
+}

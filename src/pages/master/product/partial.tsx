@@ -5,7 +5,7 @@ import {Icon, Row, RSelect} from "@/components";
 import {store as storeProduct, update as updateProduct} from "@/common/api/master/product";
 import {get as getProgram} from "@/common/api/institution/program";
 import {get as getBoarding} from "@/common/api/master/boarding";
-import type {OptionsType, ProductFormType, ProductType} from "@/types";
+import type {OptionsType, ProductType} from "@/types";
 import {GENDER_OPTIONS} from "@/common/constants";
 import {useYearContext} from "@/common/hooks/useYearContext";
 import {useInstitutionContext} from "@/common/hooks/useInstitutionContext";
@@ -25,23 +25,12 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
     const [loading, setLoading] = useState(false);
     const [programOptions, setProgramOptions] = useState<OptionsType[]>()
     const [boardingOptions, setBoardingOptions] = useState<OptionsType[]>()
-    const {control, reset, handleSubmit, register, formState: {errors}, setValue} = useForm<ProductFormType>();
+    const {control, reset, handleSubmit, register, formState: {errors}, setValue} = useForm<ProductType>();
     const genderOptions: OptionsType[] = [
         {value: 0, label: 'Semua'},
         ...GENDER_OPTIONS
     ]
-    const onSubmit = (values: ProductFormType) => {
-        const formData: ProductType = {
-            id: product?.id,
-            yearId: year?.id,
-            institutionId: institution?.id,
-            name: values.name,
-            surname: values.surname,
-            price: String(values.price).replace(/[^0-9]/g, ''),
-            gender: values.gender ? JSON.stringify(values.gender) : '',
-            program: values.program ? JSON.stringify(values.program) : '',
-            boarding: values.boarding ? JSON.stringify(values.boarding) : '',
-        }
+    const onSubmit = (formData: ProductType) => {
         if (product?.id === undefined) onStore(formData)
         else onUpdate(formData);
     }
@@ -69,9 +58,9 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
             name: '',
             surname: '',
             price: '',
-            gender: '',
-            program: '',
-            boarding: '',
+            gender: 0,
+            program: 0,
+            boarding: 0,
         });
         reset();
     }
@@ -83,12 +72,14 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
 
     useEffect(() => {
         setValue('id', product.id);
+        setValue('yearId', year?.id ? year.id : 0)
+        setValue('institutionId', institution?.id ? institution.id : 0)
         setValue('name', product.name);
         setValue('surname', product.surname)
         setValue('price', numberFormat(product.price))
-        setValue('gender', product.gender && JSON.parse(product.gender))
-        setValue('program', product.program && JSON.parse(product.program))
-        setValue('boarding', product.boarding && JSON.parse(product.boarding))
+        setValue('gender', product.gender)
+        setValue('program', product.program)
+        setValue('boarding', product.boarding)
     }, [product, setValue]);
 
     useEffect(() => {
@@ -168,10 +159,9 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
                                         <React.Fragment>
                                             <RSelect
                                                 options={genderOptions}
-                                                value={value}
-                                                onChange={(selectedOption) => onChange(selectedOption)}
+                                                value={genderOptions.find((gender) => gender.value === value)}
+                                                onChange={(val) => onChange(val?.value)}
                                                 placeholder="Pilih Kelamin"
-                                                isMulti={true}
                                             />
                                         </React.Fragment>
                                     )}
@@ -189,10 +179,9 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
                                         <React.Fragment>
                                             <RSelect
                                                 options={programOptions}
-                                                value={value}
-                                                onChange={(selectedOption) => onChange(selectedOption)}
+                                                value={programOptions?.find((program) => program.value === value)}
+                                                onChange={(val) => onChange(val?.value)}
                                                 placeholder="Pilih Aktif"
-                                                isMulti={true}
                                             />
                                         </React.Fragment>
                                     )}
@@ -210,10 +199,9 @@ const Partial = ({modal, setModal, product, setProduct, setLoadData}: PartialPro
                                         <React.Fragment>
                                             <RSelect
                                                 options={boardingOptions}
-                                                value={value}
-                                                onChange={(selectedOption) => onChange(selectedOption)}
+                                                value={boardingOptions?.find((boarding) => boarding.value === value)}
+                                                onChange={(val) => onChange(val?.value)}
                                                 placeholder="Pilih Aktif"
-                                                isMulti={true}
                                             />
                                         </React.Fragment>
                                     )}

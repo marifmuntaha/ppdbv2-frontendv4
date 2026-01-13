@@ -18,7 +18,7 @@ import type {ColumnType, ProductType} from "@/types";
 import {get as getProduct, destroy as destroyProduct} from "@/common/api/master/product";
 import {useInstitutionContext} from "@/common/hooks/useInstitutionContext";
 import {ButtonGroup, Spinner} from "reactstrap";
-import {fetchProductOption, formatIDR} from "@/helpers";
+import {numberFormat} from "@/helpers";
 
 const Product = () => {
     const year = useYearContext()
@@ -33,9 +33,9 @@ const Product = () => {
         name: '',
         surname: '',
         price: '',
-        gender: '',
-        program: '',
-        boarding: ''
+        gender: 0,
+        program: 0,
+        boarding: 0
     })
 
     const Column: ColumnType<ProductType>[] = [
@@ -51,26 +51,23 @@ const Product = () => {
         },
         {
             name: "Harga",
-            selector: (row) => formatIDR(row.price),
+            selector: (row) => "Rp. " + numberFormat(row.price),
             sortable: false,
         },
         {
             name: "JK",
             selector: (row) => row.gender,
             sortable: false,
-            cell: (row) => fetchProductOption(row.gender)
         },
         {
             name: "Program",
             selector: (row) => row.program,
             sortable: false,
-            cell: (row) => fetchProductOption(row.program)
         },
         {
             name: "Boarding",
             selector: (row) => row.boarding,
             sortable: false,
-            cell: (row) => fetchProductOption(row.boarding)
         },
         {
             name: "Aksi",
@@ -99,7 +96,7 @@ const Product = () => {
     ];
 
     useEffect(() => {
-        if (loadData) getProduct<ProductType>({yearId: year?.id, institutionId: institution?.id})
+        if (loadData) getProduct<ProductType>({yearId: year?.id, institutionId: institution?.id, list: 'table'})
             .then((resp) => setProducts(resp))
             .finally(() => setLoadData(false));
     }, [loadData])
